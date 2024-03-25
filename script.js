@@ -17,7 +17,7 @@ async function fetchAndStoreIngredients() {
 json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
 
 if (window.location.href.search("stauti") != -1) {
-    json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/stauti-available-ingredients.json?v='
+    json_url = 'https://raw.githubusercontent.com/Bumes/Stauti-Drinks/main/available-ingredients.json?v='
 }
   
 function fetchIngredients() {
