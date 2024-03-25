@@ -178,9 +178,11 @@ function Drink({category="Cocktails", name="No Name given", ingredients=[], opti
                 } else {
                     missing[formatted_ingredient][1] = missing[formatted_ingredient][1].replace(/\d+/, match => (parseInt(match) + 1).toString())
                 }
+                ingredient[i] = current_ingredients[0]
             } else {
                 ingredients[i] = ingredients[i].split("//")[0].replace("  ", " ").split(" -> ")[j]
             }
+        }
 
 
 // categories: sweet, sour, tart, fruity, fresh, boozy
@@ -196,33 +198,33 @@ vodka citron -> vodka + lemon
 x Dashes -> 
 x tsp ->
 */
-
-            for (let f = 0; f < flavor_profile.length; f++) {
-                if (category == "Cocktails") {
-                    if (!(drinks_added_flavor_profiles.includes(flavor_profile[f]))) {
-                        drinks_added_flavor_profiles.push(flavor_profile[f]);
-                    }
-                } else if (category == "Mocktails") {
-                    if (!(mocktails_added_flavor_profiles.includes(flavor_profile[f]))) {
-                        mocktails_added_flavor_profiles.push(flavor_profile[f]);
-                    }
-                } else if (category == "Shots") {
-                    if (!(shots_added_flavor_profiles.includes(flavor_profile[f]))) {
-                        shots_added_flavor_profiles.push(flavor_profile[f]);
-                    }
-                } else if (category == "Coffee") {
-                    if (!(coffee_added_flavor_profiles.includes(flavor_profile[f]))) {
-                        coffee_added_flavor_profiles.push(flavor_profile[f]);
-                    }
-                }
-            }
-            if (!(drinks_added_base_spirits.includes(base_spirit)) & base_spirit !== null) {
-                drinks_added_base_spirits.push(base_spirit);
-            }
-        }
     } else {
         every_ingredient = available_ingredients[format(name)]
     } 
+    
+
+    for (let f = 0; f < flavor_profile.length; f++) {
+        if (category == "Cocktails") {
+            if (!(drinks_added_flavor_profiles.includes(flavor_profile[f]))) {
+                drinks_added_flavor_profiles.push(flavor_profile[f]);
+            }
+        } else if (category == "Mocktails") {
+            if (!(mocktails_added_flavor_profiles.includes(flavor_profile[f]))) {
+                mocktails_added_flavor_profiles.push(flavor_profile[f]);
+            }
+        } else if (category == "Shots") {
+            if (!(shots_added_flavor_profiles.includes(flavor_profile[f]))) {
+                shots_added_flavor_profiles.push(flavor_profile[f]);
+            }
+        } else if (category == "Coffee") {
+            if (!(coffee_added_flavor_profiles.includes(flavor_profile[f]))) {
+                coffee_added_flavor_profiles.push(flavor_profile[f]);
+            }
+        }
+    }
+    if (!(drinks_added_base_spirits.includes(base_spirit)) & base_spirit !== null) {
+        drinks_added_base_spirits.push(base_spirit);
+    }
     if (options.length > 0) {
         for (let o = 0; o < options.length; o++) {
             formatted_option = format(options[o])
@@ -231,7 +233,7 @@ x tsp ->
                 o--
             }
         }    
-        if (every_ingredient === false) {
+        if (every_ingredient === false && ingredients.length == 0) {
             every_ingredient = options.length > 0
         }
     }
@@ -590,7 +592,7 @@ async function create_all() {
             Drink(drink)
         });
         
-        add_odd_element(idx)
+        add_odd_element(category)
         if (get_flavor_filter().size == 0) {
             if (idx == 0) {
                 add_all_base_spirits()
@@ -759,4 +761,14 @@ function closeDropdown(dropdown_name) {
          dropdown.classList.remove('open');
          }
     }
+}
+
+function showTab(tabId) {
+     var tabs = document.getElementsByClassName("menu");
+     for (var i = 0; i < tabs.length; i++) {
+          tabs[i].style.display = "none";
+     }
+     document.getElementById(tabId).style.display = "block";
+     create_all()
+     current_frame = tabId.split("_")[0]
 }
