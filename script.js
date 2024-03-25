@@ -89,7 +89,7 @@ coffee_added_flavor_profiles = []
 drinks_added_base_spirits = []
 
 function Drink({category="Cocktails", name="No Name given", ingredients=[], options=[], garnishes=[], base_spirit="Other", flavor_profile=[]}) {
-    if (name.search(document.getElementById(`${current_frame}-search-filter`).value) == -1) {
+    if (name.toLowerCase().search(document.getElementById(`${current_frame}-search-filter`).value.toLowerCase()) == -1) {
         return
     }
     if (current_frame == "drinks") {
@@ -216,16 +216,20 @@ x tsp ->
                 drinks_added_base_spirits.push(base_spirit);
             }
         }
-    } else  if (options.length > 0) {
+    } else {
+        every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')]
+    } 
+    if (options.length > 0) {
         for (let o = 0; o < options.length; o++) {
             formatted_option = options[o].toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
             if (!available_ingredients[formatted_option]) {
-                options.slice(o, 1)
+                options.splice(o, 1)
+                o--
             }
         }    
-        every_ingredient = options.length > 0
-    } else {
-        every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')]
+        if (every_ingredient === false) {
+            every_ingredient = options.length > 0
+        }
     }
        
     if (every_ingredient){
@@ -323,7 +327,7 @@ x tsp ->
                 <img src="${picture_folder}${name.toLowerCase().replace(/ *\([^)]*\)/g, "").trim().replace(/\s+$/g, "").split(' ').join('-').split("'").join('') + ".png"}" alt="${name + " Picture"}">
             </div>
 
-            ${flavor_profile.length > 0 || ingredients.length > 0 ? `
+            ${flavor_profile.length > 0 || ingredients.length > 0 || options.length > 0 ? `
             <div class="flavors_and_ingredients${horizontal}">
                 ${flavor_profile.length != 0 ? `
                 <div class="flavors${horizontal}">
@@ -347,7 +351,7 @@ x tsp ->
                 <div class="options${horizontal}">
                     <p1>Options:</p1>
                     <ul>
-                    ${options.map(option => `<li>${option.trim()}</li>`).join('')}
+                    ${options.map(ingredient => `<li>${ingredient.trim()}</li>`).join('')}
                     </ul>
 
                 </div>` : ''}
@@ -581,11 +585,15 @@ async function create_all() {
         
         add_odd_element(idx)
         if (get_flavor_filter().size == 0) {
+            if (idx == 0) {
+                add_all_base_spirits()
+            }
             add_all_categories(category)
         }
 
         idx++
     }
+
 
     console.log(missing)
 }
