@@ -323,7 +323,7 @@ x tsp ->
             }
         </style>
 
-        <h1 class="image-header">${name}</h2>
+        <h1 class="image-header${!every_ingredient ? '-missing' : ''}">${name}</h2>
 
         <div class="image-area${horizontal}">
 

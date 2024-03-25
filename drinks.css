@@ -27,10 +27,15 @@ h1 {
   padding-bottom: 20px;
 }
 
+.image-header-missing {
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-skip-ink: none;
+}
+
 .missing-ingredient {
   text-decoration: underline;
   text-decoration-color: red;
-  text-decoration-style: wavy;
   text-decoration-skip-ink: none;
 }
 
