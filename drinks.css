@@ -27,6 +27,14 @@ h1 {
   padding-bottom: 20px;
 }
 
+.missing-ingredient {
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-style: wavy;
+  text-decoration-skip-ink: none;
+}
+
+
 .search_label {
   font-size: 20px;
   font-weight: bold;

@@ -18,7 +18,6 @@ if (window.location.href.search("stauti") != -1) {
 async function fetchAndStoreIngredients() {
     try {
         available_ingredients = await fetchIngredients();
-        console.log(available_ingredients)
     } catch (error) {
         console.error(error);
     }
@@ -80,6 +79,11 @@ function sortIngredients(arr) {
       ...sortIngredients(right),
     ];
   }  
+
+function format(text) {
+    return text.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+}
+
 
 drinks_added_flavor_profiles = []
 mocktails_added_flavor_profiles = []
@@ -148,7 +152,7 @@ function Drink({category="Cocktails", name="No Name given", ingredients=[], opti
             current_ingredients = ingredient.split(" -> ")
             let j
             for (j=0; j < current_ingredients.length; j++) {
-                formatted_ingredient = current_ingredients[j].toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+                formatted_ingredient = format(current_ingredients[j])
                 while (formatted_ingredient[0] == "_"){
                     formatted_ingredient = formatted_ingredient.substring(1, formatted_ingredient.length)
                 }
@@ -217,11 +221,11 @@ x tsp ->
             }
         }
     } else {
-        every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')]
+        every_ingredient = available_ingredients[format(name)]
     } 
     if (options.length > 0) {
         for (let o = 0; o < options.length; o++) {
-            formatted_option = options[o].toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+            formatted_option = format(options[o])
             if (!available_ingredients[formatted_option]) {
                 options.splice(o, 1)
                 o--
@@ -245,7 +249,7 @@ x tsp ->
     ingredients = sortIngredients(ingredients);
 
     for (let g=0; g < garnishes.length; g++){
-        formatted_garnish = garnishes[g].toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+        formatted_garnish = format(garnishes[g])
         /*if (formatted_garnish.search("_or_") != -1) {
             formatted_garnishes = formatted_garnish.split("_or_")
             for (let f = 0; f < formatted_garnishes.length; f++) {
@@ -342,10 +346,13 @@ x tsp ->
                 <div class="ingredients${horizontal}">
                     <p1>Ingredients:</p1>
                     <ul>
-                    ${ingredients.map(ingredient => `<li>${ingredient.trim()}</li>`).join('')}
+                        ${ingredients.map(ingredient => `
+                            <li class="${missing.hasOwnProperty(format(ingredient)) ? 'missing-ingredient' : ''}">
+                                ${ingredient.trim()}
+                            </li>`).join('')}
                     </ul>
-
-                </div>` : ''}
+                </div>` 
+            : ''}
 
                 ${options.length > 0 ? `
                 <div class="options${horizontal}">
@@ -593,6 +600,9 @@ async function create_all() {
 
         idx++
     }
+
+    const missingIngredients = document.querySelectorAll('.missing-ingredient');
+    console.log("Number of missing ingredients:", missingIngredients.length);
 
 
     console.log(missing)
