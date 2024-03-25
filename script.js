@@ -16,9 +16,7 @@ async function fetchAndStoreIngredients() {
 
 json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
 
-console.log(window.location.href)
 if (window.location.href.search("stauti") != -1) {
-    console.log("came here")
     json_url = 'https://raw.githubusercontent.com/Bumes/Stauti-Drinks/main/available-ingredients.json?v='
 }
   
@@ -198,6 +196,10 @@ x tsp ->
             if (!(drinks_added_base_spirits.includes(base_spirit)) & base_spirit !== null) {
                 drinks_added_base_spirits.push(base_spirit);
             }
+        }
+    } else {
+        if (available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')] == false) {
+            return
         }
     }
        
