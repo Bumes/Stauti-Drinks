@@ -198,7 +198,7 @@ x tsp ->
             }
         }
     } else {
-        every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')] == false
+        every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')]
     }
        
     if (every_ingredient){
