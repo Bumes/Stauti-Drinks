@@ -1,9 +1,19 @@
 // #region Drink Creation
 
 // #region JSON 
-
 let available_ingredients;
+let drinks;
 let current_frame = "drinks"
+
+
+json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
+drinks_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/drinks.json?v='
+picture_folder = 'pictures/'
+
+if (window.location.href.search("stauti") != -1) {
+    json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/stauti-available-ingredients.json?v='
+    picture_folder = 'https://raw.githubusercontent.com/Bumes/Drinks/main/pictures/'
+}
 
 async function fetchAndStoreIngredients() {
     try {
@@ -12,14 +22,6 @@ async function fetchAndStoreIngredients() {
     } catch (error) {
         console.error(error);
     }
-}
-
-json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
-picture_folder = 'pictures/'
-
-if (window.location.href.search("stauti") != -1) {
-    json_url = 'https://raw.githubusercontent.com/Bumes/Stauti-Drinks/main/available-ingredients.json?v='
-    picture_folder = 'https://raw.githubusercontent.com/Bumes/Drinks/main/pictures/'
 }
   
 function fetchIngredients() {
@@ -31,6 +33,21 @@ function fetchIngredients() {
         return response.json();
         });
 }
+
+async function fetchAndStoreDrinks() {
+    try {
+        drinks = await fetchDrinks()
+        console.log(available_ingredients)
+    } catch (error) {
+        console.error(error);
+    }
+}
+  
+function fetchDrinks() {
+    return fetch(drinks_url + new Date().getTime())
+        .then(response => response.json())
+}
+
 
 // #endregion
 
@@ -71,7 +88,7 @@ coffee_added_flavor_profiles = []
 
 drinks_added_base_spirits = []
 
-function Drink(category, name, ingredients=[], garnishes=[], base_spirit="Other", flavor_profile=[]) {
+function Drink({category="Cocktails", name="No Name given", ingredients=[], garnishes=[], base_spirit="Other", flavor_profile=[]}) {
     if (name.search(document.getElementById(`${current_frame}-search-filter`).value) == -1) {
         return
     }
@@ -177,19 +194,19 @@ x tsp ->
 */
 
             for (let f = 0; f < flavor_profile.length; f++) {
-                if (category == 0) {
+                if (category == "Cocktails") {
                     if (!(drinks_added_flavor_profiles.includes(flavor_profile[f]))) {
                         drinks_added_flavor_profiles.push(flavor_profile[f]);
                     }
-                } else if (category == 1) {
+                } else if (category == "Mocktails") {
                     if (!(mocktails_added_flavor_profiles.includes(flavor_profile[f]))) {
                         mocktails_added_flavor_profiles.push(flavor_profile[f]);
                     }
-                } else if (category == 2) {
+                } else if (category == "Shots") {
                     if (!(shots_added_flavor_profiles.includes(flavor_profile[f]))) {
                         shots_added_flavor_profiles.push(flavor_profile[f]);
                     }
-                } else if (category == 3) {
+                } else if (category == "Coffee") {
                     if (!(coffee_added_flavor_profiles.includes(flavor_profile[f]))) {
                         coffee_added_flavor_profiles.push(flavor_profile[f]);
                     }
@@ -346,16 +363,16 @@ x tsp ->
             wrapperDiv.appendChild(saved_html);
             wrapperDiv.appendChild(drinkDiv);
 
-            if (category == 0){
+            if (category == "Cocktails"){
                 drinks_menu.appendChild(wrapperDiv);
             }
-            else if (category == 1){
+            else if (category == "Mocktails"){
                 mocktail_menu.appendChild(wrapperDiv);
             }
-            else if (category == 2){
+            else if (category == "Shots"){
                 shots_menu.appendChild(wrapperDiv);
             }
-            else if (category == 3){
+            else if (category == "Coffee"){
                 coffee_menu.appendChild(wrapperDiv);
             }
 
@@ -370,35 +387,19 @@ x tsp ->
 
         // Append both saved_html and drinkDiv to the wrapper
         wrapperDiv.appendChild(drinkDiv);
-        if (category == 0){
+        if (category == "Cocktails"){
             drinks_menu.appendChild(wrapperDiv);
         }
-        else if (category == 1){
+        else if (category == "Mocktails"){
             mocktail_menu.appendChild(wrapperDiv);
         }
-        else if (category == 2){
+        else if (category == "Shots"){
             shots_menu.appendChild(wrapperDiv);
         }
-        else if (category == 3){
+        else if (category == "Coffee"){
             coffee_menu.appendChild(wrapperDiv);
         }
     }
-}
-
-function Cocktail(name, ingredients, garnishes, base_spirit, flavor_profile) {
-    Drink(0, name, ingredients, garnishes, base_spirit, flavor_profile)
-}
-
-function Mocktail(name, ingredients, garnishes, flavor_profile) {
-    Drink(1, name, ingredients, garnishes, null, flavor_profile)
-}
-
-function Shot(name, ingredients, garnishes, flavor_profile) {
-    Drink(2, name, ingredients, garnishes, null, flavor_profile)
-}
-
-function Coffee(name, ingredients, garnishes, flavor_profile) {
-    Drink(3, name, ingredients, garnishes, null, flavor_profile)
 }
 
 function add_odd_element(category){
@@ -421,16 +422,16 @@ function add_odd_element(category){
         // Append both saved_html and drinkDiv to the wrapper
         wrapperDiv.appendChild(saved_html);
     
-        if (category == 0){
+        if (category == "Cocktails"){
             drinks_menu.appendChild(wrapperDiv);
         }
-        else if (category == 1){
+        else if (category == "Mocktails"){
             mocktail_menu.appendChild(wrapperDiv);
         }
-        else if (category == 2){
+        else if (category == "Shots"){
             shots_menu.appendChild(wrapperDiv);
         }
-        else if (category == 3){
+        else if (category == "Coffee"){
             coffee_menu.appendChild(wrapperDiv);
         }
         saved_html = ""
@@ -466,22 +467,22 @@ function get_base_spirits_filter() {
 
 function add_all_categories(category){
     let my_element_id = null
-    if (category == 0) {
+    if (category == "Cocktails") {
         drinks_added_flavor_profiles.sort()
         flavor_profile = drinks_added_flavor_profiles
         dropdownContent = document.getElementById("dropdown-content")
         my_element_id = 'drinks-category-dropdown-content'
-    } else if (category == 1) {
+    } else if (category == "Mocktails") {
         mocktails_added_flavor_profiles.sort()
         flavor_profile = mocktails_added_flavor_profiles
         area = document.getElementById("mocktails_category_area")
         my_element_id = 'mocktails-category-dropdown-content'
-    } else if (category == 2) {
+    } else if (category == "Shots") {
         shots_added_flavor_profiles.sort()
         flavor_profile = shots_added_flavor_profiles
         area = document.getElementById("shots_category_area")
         my_element_id = 'shots-category-dropdown-content'
-    } else if (category == 3) {
+    } else if (category == "Coffee") {
         coffee_added_flavor_profiles.sort()
         flavor_profile = coffee_added_flavor_profiles
         area = document.getElementById("coffee_category_area")
@@ -530,99 +531,132 @@ function delete_all() {
 }
 
 
+
+function Cocktail({name, ingredients, garnishes, base_spirit, flavor_profile}) {
+    Drink(0, name, ingredients, garnishes, base_spirit, flavor_profile)
+}
+
+function Mocktail({name, ingredients, garnishes, flavor_profile}) {
+    Drink(1, name, ingredients, garnishes, null, flavor_profile)
+}
+
+function Shot({name, ingredients, garnishes, flavor_profile}) {
+    Drink(2, name, ingredients, garnishes, null, flavor_profile)
+}
+
+function Coffee({name, ingredients, garnishes, flavor_profile}) {
+    Drink(3, name, ingredients, garnishes, null, flavor_profile)
+}
+
 async function create_all() {
     await fetchAndStoreIngredients();
+    await fetchAndStoreDrinks();
 
     delete_all()
 
-    Cocktail("Edelstoff", [], [], "Beer", [])
-    Cocktail("Secco", [], [], "Wine", [])
-    Cocktail("Red Wine", [], [], "Wine", [])
-    Cocktail("White Wine", [], [], "Wine", [])
-    Cocktail("Mimosa", ["Secco", "Orange Juice"], [], "Wine", [])
-    Cocktail("Mojito", ["60ml White Rum", "15g Brown Sugar", "½ Lime -> 15ml Lime Juice", "Mint -> ", "Sparkling Water"], ["Mint"], "Rum", ["Fresh", "Citrus"]);
-    Cocktail("Cuba Libre", ["60ml Brown Rum -> 60ml White Rum", "½ Lime -> 15ml Lime Juice", "Coca Cola -> Soda Stream Cola"], ["Lime"], "Rum", ["Sweet", "Citrus"]);
-    Cocktail("Aperol Spritz", ["60ml Secco", "30ml Aperol", "Sparkling Water"], ["Orange"], "Aperol", ["Fresh", "Bitter", "Fruity"])
-    Cocktail("Hugo", ["60ml Secco", "¼ Lime -> 10ml Lime Juice", "15ml Elderflower sirup", "Sparkling Water"], ["Mint"], "Wine", ["Sweet", "Fresh"])
-    Cocktail("Martini",["60ml Gin", "15ml Dry Vermouth -> 15ml Sweet Vermouth -> 15ml Lillet"], ["Lemon Twist or Olive"], "Gin", ["Strong"]);
-    Cocktail("Vodka Martini", ["60ml Vodka", "15ml Dry Vermouth -> 15ml Sweet Vermouth -> 15ml Lillet"], ["Lemon Twist or Olive"], "Vodka", ["Strong"]);
-    Cocktail("Espresso Martini", ["Double Espresso", "30ml Coffee Liqueur", "15ml Vodka"], ["Coffee Beans"], "Vodka", ["Strong", "Coffee"])
-    
-    Cocktail("Negroni", ["30ml Gin", "30ml Sweet Vermouth", "30ml Campari -> 30ml Aperol"], ["Orange"], "Gin", ["Strong", "Bitter"])
-    Cocktail("Margarita (not made)", ["50ml Silver Tequila", "30ml Triple Sec", "30ml Lime Juice"], ["Orange"], "Tequila", ["Strong", "Sour"])
-    Cocktail("Daiquiri", ["60ml White Rum -> 60ml Brown Rum", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar"], ["Lime"], "Rum", ["Strong", "Citrus"])
-    Cocktail("Penicillin", ["60ml Whiskey // (Scotch)", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Honey Sirup -> 30ml Agave Sirup -> 15ml Honey -> 30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar", "Ginger"], ["Candied Ginger"], "Whiskey", ["Sweet", "Ginger"])
-    Cocktail("Moscow Mule", ["60ml Vodka", "90ml Ginger Beer -> 90ml Ginger Ale", "½ Lime -> 15ml Lime Juice"], ["Lime"], "Vodka", ["Ginger", "Citrus"])
-    Cocktail("Pisco Sour (not made)", ["60ml Pisco", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "(1 Egg White)"], ["(Angostura Bitters)"], ["Citrus", "Creamy (if wanted)"])
-    Cocktail("Paloma (not made)", ["60ml Blanco Tequila", "30ml Lime Juice", "Grapefruit Soda", "Salt"], ["Lime"], "Tequila", ["Strong", "Sour"])
-    Cocktail("French 75", ["30ml Gin", "½ Lemon -> ½ Lime -> 15ml Lemon Juice -> 15ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "90ml Secco"], ["Lemon"], "Gin", ["Citrus", "Bubbly"])
-    Cocktail("Last Word (not made)", ["30ml Gin", "30ml Chartreuse", "30ml Lime Juice"])
-    Cocktail("Mai Tai", ["60ml Blended Rum -> 60ml Brown Rum -> 60ml White Rum", "30ml Lime Juice", "30ml Orgeat Sirup", "15ml Orange Liqueur", "Mint -> "], ["Mint"], "Rum", ["Strong", "Fruity"])
-    Cocktail("Gimlet (not made)", ["60ml London Dry Gin -> 60ml Gin", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup"], ["Lime"], "Gin", ["Strong", "Citrus"])
-    Cocktail("Clover Club", ["50ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Raspberry Sirup", "1 Egg White"], [], "Gin" ["Fruity", "Creamy"])
-    Cocktail("Amaretto Sour (not made)", ["50ml Amaretto", "30ml Lemon Juice -> 30ml Lime Juice", "15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar -> 15ml Agave Sirup", "1 Egg White"], ["Cocktail Cherry", "Angostura Bitters"], ["Nutty", "Citrus", "Creamy"])
-    Cocktail("Jungle Bird", ["50ml Brown Rum -> 50ml White Rum", "20ml Campari -> 20ml Aperol", "15ml Lime Juice", "15ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "50ml Pineapple Juice"], [], "Rum", ["Fruity", "Sweet"])
-    Cocktail("Gin Fizz", ["50ml Gin", "60ml Lemon Juice", "30ml Simple Sirup -> 20g White Sugar -> 30g Brown Sugar -> 30ml Agave Sirup", "Sparkling Water"], ["Lemon"], "Gin", ["Strong", "Bubbly"])
-    Cocktail("Piña Colada", ["60ml White Rum", "60ml Coconut Cream", "60ml Pineapple Juice"], ["Pineapple Leave"], "Rum", ["Fruity", "Creamy", "Summer"])
-    Cocktail("Corpse Reviver (not made)", ["30ml Gin", "30ml Triple Sec", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Lillet -> 30ml Sweet Vermouth", "Absinthe"], ["Lemon"], "Gin", ["Strong", "Citrus"])
-    Cocktail("Zombie (not made)", ["30ml White Rum", "30ml Brown Rum", "30ml Apricot Brandy", "15ml Falernum Liqueur", "30ml Lime Juice", "30ml Pineapple Juice", "10ml Grenadine"], ["Pineapple", "Cocktail Cherry"], "Rum", ["Strong", "Fruity"])
-    Cocktail("Bee's Knees", ["60ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Honey Sirup -> 15ml Honey -> 30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup"], ["Lemon"], "Gin", ["Strong", "Honey"])
-    Cocktail("Gin Basil Smash", ["60ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "Basil"], ["Basil"], "Gin", ["Strong", "Herbs"])
-    Cocktail("Vesper (not made)", ["60ml Gin", "30ml Vodka", "15ml Lillet -> 15ml Sweet Vermouth -> 15ml Dry Vermouth"], ["Lemon", "Orange"], "Gin", ["Strong"])
-    Cocktail("Cosmopolitan (not made)", ["50ml Vodka Citron -> 50ml Vodka // (with citron)", "30ml Cointreau", "30ml Lime Juice", "60ml Cranberry Juice"], ["Lemon"], "Vodka", ["Strong", "Citrus", "Fruity"])
-    Cocktail("Bramble (not made)", ["60ml Gin", "30ml Lemon Juice", "15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar -> 15ml Agave Sirup", "15ml Crème de mûre"], ["Lemon", "Blackberries"], "Gin", ["Strong", "Fruity"])
-    Cocktail("Old Cuban (not made)", ["50ml Brown Rum -> 50ml Blended Rum -> 50ml White Rum", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "60ml Secco", "Mint", "2 Dashes Angostura Bitters"], ["Mint"], "Rum", ["Fresh", "Bubbly"])
-    Cocktail("Caipirinha (not made)", ["60ml Pitu", "1 Lime", "10g White Sugar -> 20ml Simple Sirup -> 10g Brown Sugar -> 20ml Agave Sirup"])
-    Cocktail("Southside (not made)", ["60ml Gin", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "30ml Lime Juice", "Mint"], ["Mint"], "Gin", ["Strong", "Fresh"])
-    Cocktail("French Kiss (not made)", ["60ml Gin", "Berries // muddled", "Secco", "Sparkling Water"], ["Raspberry", "Lemon Twist"], "Gin", ["Fruity", "Bubbly"])
-    Cocktail("Passion fruit skinny bitch (not made)", ["60ml Vodka", "30ml Lime Juice", "Passion Fruit", "Sparkling Water"], ["Passion Fruit"], "Vodka", ["Fruity", "Bubbly"])
-    Cocktail("Cranberry gin fizz (not made)", ["60ml Strawberry Gin -> 60ml Gin", "Strawberry", "Sparkling Water"], ["Rosemary"], "Gin", ["Fruity", "Bubbly", "Herbs"])
-    Cocktail("Sex on the beach (not made)", ["40ml Vodka", "20ml Peach Liqueur", "15ml Cranberry Sirup", "15ml Grenadine", "½ Lime -> 15ml Lime Juice", "80ml Orange Juice"], ["Cocktail Cherry"], "Vodka", ["Fruity", "Sweet"])
-    Cocktail("Fence Hopper (not made)", ["30ml Whiskey // (Bourbon)", "30ml Apple Cider", "15ml Maple Sirup -> 15ml Honey Sirup -> 15ml Agave Sirup -> 10g Brown Sugar -> 10g White Sugar", "10ml Lemon Juice -> ½ Lemon -> ½ Lime -> 15ml Lime Juice",  "Angostura Bitters", "100ml IPA -> 100ml Beer"], ["Cinnamon Stick"], "Whiskey", ["Fruity", "Cinnamon"])
-    Cocktail("Italien Mule", ["50ml Amaretto", "20ml Lime Juice -> ½ Lime -> ½ Lemon -> 15ml Lemon Juice", "Ginger Beer"], ["Lemon Twist"], "", ["Nutty", "Citrus", "Ginger"])    
-    Cocktail("Italien Mule (Aperol Version) (not made)", ["50ml Aperol", "20ml Lime Juice -> ½ Lime -> ½ Lemon -> 15ml Lemon Juice", "Red Wine", "Ginger Beer"], ["Mint"], "Aperol", ["Citrus", "Ginger", "Mint"])
-    Cocktail("Kigoi Koi (not made)", ["60ml Gin", "½ Lemon -> 15ml Lemon Juice -> ½ Lime -> 15ml Lime Juice", "15ml Honey Sirup -> 15ml Agave Sirup -> 10ml Honey -> 15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar", "Secco"], [], "Gin", ["Citrus", "Honey", "Bubbly"])
-    Cocktail("Kojito (not made)", ["60ml White Rum", "½ Lime -> 15ml Lime Juice Lime -> ½ Lemon -> 15ml Lemon Juice", "30ml Orange Juice", "Ginger Ale -> Ginger Beer"], ["Mint"], "Rum", ["Fruity", "Ginger", "Mint"])
-    Cocktail("Japan Mule (not made)", ["60ml Shochu", "½ Lime -> 15ml Lime Juice Lime -> ½ Lemon -> 15ml Lemon Juice", "Ginger Beer", "Yuzu"], ["Dried Citrus"], "Other", ["Strong", "Ginger", "Citrus", "Woody"])
-    Cocktail("Original", ["50ml Gin -> 50ml Vodka", "50ml Elderflower Sirup", "50ml Lime Juice -> 50ml Lemon Juice", "Sparkling Water"], ["Lime"], "Vodka", ["Fresh", "Bubbly"])
-    Cocktail("43 Milk", ["50ml Licor 43", "50ml Milk"], ["(Chocolate Powder)"], ["Creamy"])
+    for (const category in drinks) {
+        drinks[category].forEach(drink => {
+            drink["category"] = category
+            Drink(drink)
+        });
+        
+        add_odd_element(idx)
+        if (get_flavor_filter().size == 0) {
+            add_all_categories(idx)
+        }
+    }
+
+    /*Cocktail({name: "Edelstoff"})
+    Cocktail({name: "Secco", base_spirit: "Wine"})
+    Cocktail({name: "Red Wine", base_spirit: "Wine"})
+    Cocktail({name: "White Wine", base_spirit: "Wine"})
+    Cocktail({name: "Mimosa", ingredients: ["Secco", "Orange Juice"], base_spirit: "Wine"})
+    Cocktail({name: "Mojito", ingredients: ["60ml White Rum", "15g Brown Sugar", "½ Lime -> 15ml Lime Juice", "Mint -> ", "Sparkling Water"], garnishes: ["Mint"], base_spirit: "Rum", flavor_profile: ["Fresh", "Citrus"]});
+    Cocktail({name: "Cuba Libre", ingredients: ["60ml Brown Rum -> 60ml White Rum", "½ Lime -> 15ml Lime Juice", "Coca Cola -> Soda Stream Cola"], garnishes: ["Lime"], base_spirit: "Rum", flavor_profile: ["Sweet", "Citrus"]});
+    Cocktail({name: "Aperol Spritz", ingredients: ["60ml Secco", "30ml Aperol", "Sparkling Water"], garnishes: ["Orange"], base_spirit: "Aperol", flavor_profile: ["Fresh", "Bitter", "Fruity"]})
+    Cocktail({name: "Hugo", ingredients: ["60ml Secco", "¼ Lime -> 10ml Lime Juice", "15ml Elderflower sirup", "Sparkling Water"], garnishes: ["Mint"], base_spirit: "Wine", flavor_profile: ["Sweet", "Fresh"]})
+    Cocktail({name: "Martini", ingredients:["60ml Gin", "15ml Dry Vermouth -> 15ml Sweet Vermouth -> 15ml Lillet"], garnishes: ["Lemon Twist or Olive"], base_spirit: "Gin", flavor_profile: ["Strong"]});
+    Cocktail({name: "Vodka Martini", ingredients: ["60ml Vodka", "15ml Dry Vermouth -> 15ml Sweet Vermouth -> 15ml Lillet"], garnishes: ["Lemon Twist or Olive"], base_spirit: "Vodka", flavor_profile: ["Strong"]});
+    Cocktail({name: "Espresso Martini", ingredients: ["Double Espresso", "30ml Coffee Liqueur", "15ml Vodka"], garnishes: ["Coffee Beans"], base_spirit: "Vodka", flavor_profile: ["Strong", "Coffee"]})
+
+    Cocktail({name: "Negroni", ingredients: ["30ml Gin", "30ml Sweet Vermouth", "30ml Campari -> 30ml Aperol"], garnishes: ["Orange"], base_spirit: "Gin", flavor_profile: ["Strong", "Bitter"]})
+    Cocktail({name: "Margarita (not made)", ingredients: ["50ml Silver Tequila", "30ml Triple Sec", "30ml Lime Juice"], garnishes: ["Orange"], base_spirit: "Tequila", flavor_profile: ["Strong", "Sour"]})
+    Cocktail({name: "Daiquiri", ingredients: ["60ml White Rum -> 60ml Brown Rum", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar"], garnishes: ["Lime"], base_spirit: "Rum", flavor_profile: ["Strong", "Citrus"]})
+    Cocktail({name: "Penicillin", ingredients: ["60ml Whiskey // (Scotch)", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Honey Sirup -> 30ml Agave Sirup -> 15ml Honey -> 30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar", "Ginger"], garnishes: ["Candied Ginger"], base_spirit: "Whiskey", flavor_profile: ["Sweet", "Ginger"]})
+    Cocktail({name: "Moscow Mule", ingredients: ["60ml Vodka", "90ml Ginger Beer -> 90ml Ginger Ale", "½ Lime -> 15ml Lime Juice"], garnishes: ["Lime"], base_spirit: "Vodka", flavor_profile: ["Ginger", "Citrus"]})
+    Cocktail({name: "Pisco Sour (not made)", ingredients: ["60ml Pisco", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "(1 Egg White)"], garnishes: ["(Angostura Bitters)"], flavor_profile: ["Citrus", "Creamy (if wanted)"]})
+    Cocktail({name: "Paloma (not made)", ingredients: ["60ml Blanco Tequila", "30ml Lime Juice", "Grapefruit Soda", "Salt"], garnishes: ["Lime"], base_spirit: "Tequila", flavor_profile: ["Strong", "Sour"]})
+    Cocktail({name: "French 75", ingredients: ["30ml Gin", "½ Lemon -> ½ Lime -> 15ml Lemon Juice -> 15ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "90ml Secco"], garnishes: ["Lemon"], base_spirit: "Gin", flavor_profile: ["Citrus", "Bubbly"]})
+    Cocktail({name: "Last Word (not made)", ingredients: ["30ml Gin", "30ml Chartreuse", "30ml Lime Juice"]})
+    Cocktail({name: "Mai Tai", ingredients: ["60ml Blended Rum -> 60ml Brown Rum -> 60ml White Rum", "30ml Lime Juice", "30ml Orgeat Sirup", "15ml Orange Liqueur", "Mint -> "], garnishes: ["Mint"], base_spirit: "Rum", flavor_profile: ["Strong", "Fruity"]})
+    Cocktail({name: "Gimlet (not made)", ingredients: ["60ml London Dry Gin -> 60ml Gin", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup"], garnishes: ["Lime"], base_spirit: "Gin", flavor_profile: ["Strong", "Citrus"]})
+    Cocktail({name: "Clover Club", ingredients: ["50ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Raspberry Sirup", "1 Egg White"], garnishes: [], base_spirit: "Gin", flavor_profile: ["Fruity", "Creamy"]})
+
+    Cocktail({name: "Amaretto Sour (not made)", ingredients: ["50ml Amaretto", "30ml Lemon Juice -> 30ml Lime Juice", "15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar -> 15ml Agave Sirup", "1 Egg White"], garnishes: ["Cocktail Cherry", "Angostura Bitters"], base_spirit: "Not specified", flavor_profile: ["Nutty", "Citrus", "Creamy"]})
+    Cocktail({name: "Jungle Bird", ingredients: ["50ml Brown Rum -> 50ml White Rum", "20ml Campari -> 20ml Aperol", "15ml Lime Juice", "15ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "50ml Pineapple Juice"], garnishes: [], base_spirit: "Rum", flavor_profile: ["Fruity", "Sweet"]})
+    Cocktail({name: "Gin Fizz", ingredients: ["50ml Gin", "60ml Lemon Juice", "30ml Simple Sirup -> 20g White Sugar -> 30g Brown Sugar -> 30ml Agave Sirup", "Sparkling Water"], garnishes: ["Lemon"], base_spirit: "Gin", flavor_profile: ["Strong", "Bubbly"]})
+    Cocktail({name: "Piña Colada", ingredients: ["60ml White Rum", "60ml Coconut Cream", "60ml Pineapple Juice"], garnishes: ["Pineapple Leave"], base_spirit: "Rum", flavor_profile: ["Fruity", "Creamy", "Summer"]})
+    Cocktail({name: "Corpse Reviver (not made)", ingredients: ["30ml Gin", "30ml Triple Sec", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Lillet -> 30ml Sweet Vermouth", "Absinthe"], garnishes: ["Lemon"], base_spirit: "Gin", flavor_profile: ["Strong", "Citrus"]})
+    Cocktail({name: "Zombie (not made)", ingredients: ["30ml White Rum", "30ml Brown Rum", "30ml Apricot Brandy", "15ml Falernum Liqueur", "30ml Lime Juice", "30ml Pineapple Juice", "10ml Grenadine"], garnishes: ["Pineapple", "Cocktail Cherry"], base_spirit: "Rum", flavor_profile: ["Strong", "Fruity"]})
+    Cocktail({name: "Bee's Knees", ingredients: ["60ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Honey Sirup -> 15ml Honey -> 30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup"], garnishes: ["Lemon"], base_spirit: "Gin", flavor_profile: ["Strong", "Honey"]})
+    Cocktail({name: "Gin Basil Smash", ingredients: ["60ml Gin", "30ml Lemon Juice -> 30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "Basil"], garnishes: ["Basil"], base_spirit: "Gin", flavor_profile: ["Strong", "Herbs"]})
+    Cocktail({name: "Vesper (not made)", ingredients: ["60ml Gin", "30ml Vodka", "15ml Lillet -> 15ml Sweet Vermouth -> 15ml Dry Vermouth"], garnishes: ["Lemon", "Orange"], base_spirit: "Gin", flavor_profile: ["Strong"]})
+    Cocktail({name: "Cosmopolitan (not made)", ingredients: ["50ml Vodka Citron -> 50ml Vodka // (with citron)", "30ml Cointreau", "30ml Lime Juice", "60ml Cranberry Juice"], garnishes: ["Lemon"], base_spirit: "Vodka", flavor_profile: ["Strong", "Citrus", "Fruity"]})
+    Cocktail({name: "Bramble (not made)", ingredients: ["60ml Gin", "30ml Lemon Juice", "15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar -> 15ml Agave Sirup", "15ml Crème de mûre"], garnishes: ["Lemon", "Blackberries"], base_spirit: "Gin", flavor_profile: ["Strong", "Fruity"]})
+    Cocktail({name: "Old Cuban (not made)", ingredients: ["50ml Brown Rum -> 50ml Blended Rum -> 50ml White Rum", "30ml Lime Juice", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "60ml Secco", "Mint", "2 Dashes Angostura Bitters"], garnishes: ["Mint"], base_spirit: "Rum", flavor_profile: ["Fresh", "Bubbly"]})
+    Cocktail({name: "Caipirinha (not made)", ingredients: ["60ml Pitu", "1 Lime", "10g White Sugar -> 20ml Simple Sirup -> 10g Brown Sugar -> 20ml Agave Sirup"], garnishes: [], base_spirit: "Not specified", flavor_profile: []})
+    Cocktail({name: "Southside (not made)", ingredients: ["60ml Gin", "30ml Simple Sirup -> 20g White Sugar -> 20g Brown Sugar -> 30ml Agave Sirup", "30ml Lime Juice", "Mint"], garnishes: ["Mint"], base_spirit: "Gin", flavor_profile: ["Strong", "Fresh"]})
+    Cocktail({name: "French Kiss (not made)", ingredients: ["60ml Gin", "Berries // muddled", "Secco", "Sparkling Water"], garnishes: ["Raspberry", "Lemon Twist"], base_spirit: "Gin", flavor_profile: ["Fruity", "Bubbly"]})
+    Cocktail({name: "Passion fruit skinny bitch (not made)", ingredients: ["60ml Vodka", "30ml Lime Juice", "Passion Fruit", "Sparkling Water"], garnishes: ["Passion Fruit"], base_spirit: "Vodka", flavor_profile: ["Fruity", "Bubbly"]})
+    Cocktail({name: "Cranberry gin fizz (not made)", ingredients: ["60ml Strawberry Gin -> 60ml Gin", "Strawberry", "Sparkling Water"], garnishes: ["Rosemary"], base_spirit: "Gin", flavor_profile: ["Fruity", "Bubbly", "Herbs"]})
+    Cocktail({name: "Sex on the beach (not made)", ingredients: ["40ml Vodka", "20ml Peach Liqueur", "15ml Cranberry Sirup", "15ml Grenadine", "½ Lime -> 15ml Lime Juice", "80ml Orange Juice"], garnishes: ["Cocktail Cherry"], base_spirit: "Vodka", flavor_profile: ["Fruity", "Sweet"]})
+    Cocktail({name: "Fence Hopper (not made)", ingredients: ["30ml Whiskey // (Bourbon)", "30ml Apple Cider", "15ml Maple Sirup -> 15ml Honey Sirup -> 15ml Agave Sirup -> 10g Brown Sugar -> 10g White Sugar", "10ml Lemon Juice -> ½ Lemon -> ½ Lime -> 15ml Lime Juice",  "Angostura Bitters", "100ml IPA -> 100ml Beer"], garnishes: ["Cinnamon Stick"], base_spirit: "Whiskey", flavor_profile: ["Fruity", "Cinnamon"]})
+    Cocktail({name: "Italien Mule", ingredients: ["50ml Amaretto", "20ml Lime Juice -> ½ Lime -> ½ Lemon -> 15ml Lemon Juice", "Ginger Beer"], garnishes: ["Lemon Twist"], base_spirit: "", flavor_profile: ["Nutty", "Citrus", "Ginger"]})
+    Cocktail({name: "Italien Mule (Aperol Version) (not made)", ingredients: ["50ml Aperol", "20ml Lime Juice -> ½ Lime -> ½ Lemon -> 15ml Lemon Juice", "Red Wine", "Ginger Beer"], garnishes: ["Mint"], base_spirit: "Aperol", flavor_profile: ["Citrus", "Ginger", "Mint"]})
+    Cocktail({name: "Kigoi Koi (not made)", ingredients: ["60ml Gin", "½ Lemon -> 15ml Lemon Juice -> ½ Lime -> 15ml Lime Juice", "15ml Honey Sirup -> 15ml Agave Sirup -> 10ml Honey -> 15ml Simple Sirup -> 10g White Sugar -> 10g Brown Sugar", "Secco"], garnishes: [], base_spirit: "Gin", flavor_profile: ["Citrus", "Honey", "Bubbly"]})
+    Cocktail({name: "Kojito (not made)", ingredients: ["60ml White Rum", "½ Lime -> 15ml Lime Juice Lime -> ½ Lemon -> 15ml Lemon Juice", "30ml Orange Juice", "Ginger Ale -> Ginger Beer"], garnishes: ["Mint"], base_spirit: "Rum", flavor_profile: ["Fruity", "Ginger", "Mint"]})
+    Cocktail({name: "Japan Mule (not made)", ingredients: ["60ml Shochu", "½ Lime -> 15ml Lime Juice Lime -> ½ Lemon -> 15ml Lemon Juice", "Ginger Beer", "Yuzu"], garnishes: ["Dried Citrus"], base_spirit: "Other", flavor_profile: ["Strong", "Ginger", "Citrus", "Woody"]})
+    Cocktail({name: "Original", ingredients: ["50ml Gin -> 50ml Vodka", "50ml Elderflower Sirup", "50ml Lime Juice -> 50ml Lemon Juice", "Sparkling Water"], garnishes: ["Lime"], base_spirit: "Vodka", flavor_profile: ["Fresh", "Bubbly"]})
+    Cocktail({name: "43 Milk", ingredients: ["50ml Licor 43", "50ml Milk"], garnishes: ["(Chocolate Powder)"], base_spirit: "", flavor_profile: ["Creamy"]})
     add_odd_element(0)
     if (get_base_spirits_filter().size == 0) {
         add_all_categories(0)
     }
 
-    Mocktail("Brazilian Lemonade (not made)", ["1 Lime -> 30ml Lime Juice", "15g Brown Sugar -> 15g White Sugar", "100ml Condensed Milk"], ["Lime"], ["Citrus", "Creamy"])
-    Mocktail("Basil Lemonade (not made)", ["Lime", "Basil", "Mint"], ["Lime"], ["Herbs", "Citrus", "Fresh"])
-    Mocktail("Matcha Tonic", ["30ml Matcha", "Tonic Water", "(White Sugar)"], [], ["Herbs", "Bitter", "Fresh"])
+    /*Mocktail({name: "Brazilian Lemonade (not made)", ingredients:["1 Lime -> 30ml Lime Juice", "15g Brown Sugar -> 15g White Sugar", "100ml Condensed Milk"], garnishes:["Lime"], base_spirit:[], flavor_profile:["Citrus", "Creamy"]})
+    Mocktail({name: "Basil Lemonade (not made)", ingredients:["Lime", "Basil", "Mint"], garnishes:["Lime"], base_spirit:[], flavor_profile:["Herbs", "Citrus", "Fresh"]})
+    Mocktail({name: "Matcha Tonic", ingredients:["30ml Matcha", "Tonic Water", "(White Sugar)"], garnishes:[], base_spirit:[], flavor_profile:["Herbs", "Bitter", "Fresh"]})
+    
     add_odd_element(1)
     if (get_flavor_filter().size == 0) {
         add_all_categories(1)
     }
-
-    Shot("Liquid Cocain (not made)", ["Licor 43", "Coldbrew"])
-    Shot("Brain (not made)", ["10ml Vodka", "10ml Lime Juice -> 10ml Lemon Juice", "10ml Baileys"])
-    Shot("Green Tea Shot", ["10ml Whiskey", "10ml Peach Schnapps -> 10ml Peach Liqueur", "10ml Lime Juice -> 10ml Lemon Juice", "10ml Simple Sirup -> 5g White Sugar -> 10ml Agave Sirup"])
+    Shot({name: "Liquid Cocain (not made)", ingredients:["Licor 43", "Coldbrew"]})
+    Shot({name: "Brain (not made)", ingredients:["10ml Vodka", "10ml Lime Juice -> 10ml Lemon Juice", "10ml Baileys"]})
+    Shot({name: "Green Tea Shot", ingredients:["10ml Whiskey", "10ml Peach Schnapps -> 10ml Peach Liqueur", "10ml Lime Juice -> 10ml Lemon Juice", "10ml Simple Sirup -> 5g White Sugar -> 10ml Agave Sirup"]})
+    
     add_odd_element(2)
     if (get_flavor_filter().size == 0) {
         add_all_categories(2)
     }
 
-    Coffee("Espresso", ["Double Espresso", "(Brown Sugar)"], ["Amaretti"], ["Coffee", "Strong"])
-    Coffee("Espresso Macchiato", ["Double Espresso", "Steamed Milk", "(Brown Sugar)"], ["Amaretti"], ["Coffee", "Strong", "Creamy"])
-    Coffee("Americano", ["Espresso", "Water"], ["Coffee"])
-    Coffee("Aeracano", ["Espresso", "Water"], ["Coffee", "Creamy"])
-    Coffee("Cappuccino", ["Double Espresso", "Milk // (Hot)", "Steamed Milk", "(Brown Sugar)"], ["Coffee", "Creamy"])
-    Coffee("Latte Macchiato", ["Double Espresso", "Steamed Milk", "(Brown Sugar)"], ["Coffee", "Creamy", "Milky"])
-    Coffee("Adultuccino", ["Coffee", "Chocolate Powder", "Steamed Milk"], ["Coffee", "Chocolate", "Creamy"])
-    Coffee("Chococino", ["Double Espresso", "Chocolate Powder", "Steamed Milk"], ["Coffee", "Chocolate", "Creamy"])
-    Coffee("Hot Chocolate", ["Chocolate Powder", "(Steamed) Milk"], ["Chocolate Powder"], ["Chocolate", "Creamy"])
-    Coffee("Dalgona Coffee", ["Double Espresso", "Brown Sugar", "Milk"], ["Coffee", "Sweet", "Creamy"])
-    Coffee("Creme Brule Coldbrew", ["Coldbrew", "Cream", "Milk", "Brown Sugar"], ["Coffee", "Sweet", "Creamy"])
+    Coffee({name: "Espresso", ingredients: ["Double Espresso", "(Brown Sugar)"], garnishes: ["Amaretti"], base_spirit: ["Coffee"], flavor_profile: ["Strong"]})
+    Coffee({name: "Espresso Macchiato", ingredients: ["Double Espresso", "Steamed Milk", "(Brown Sugar)"], garnishes: ["Amaretti"], base_spirit: ["Coffee"], flavor_profile: ["Strong", "Creamy"]})
+    Coffee({name: "Americano", ingredients: ["Espresso", "Water"], garnishes: ["Coffee"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Aeracano", ingredients: ["Espresso", "Water"], garnishes: ["Coffee", "Creamy"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Cappuccino", ingredients: ["Double Espresso", "Milk // (Hot)", "Steamed Milk", "(Brown Sugar)"], garnishes: ["Coffee", "Creamy"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Latte Macchiato", ingredients: ["Double Espresso", "Steamed Milk", "(Brown Sugar)"], garnishes: ["Coffee", "Creamy", "Milky"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Adultuccino", ingredients: ["Double Espresso", "Chocolate Powder", "Steamed Milk"], garnishes: ["Coffee", "Chocolate", "Creamy"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Chococino", ingredients: ["Double Espresso", "Chocolate Powder", "Steamed Milk"], garnishes: ["Coffee", "Chocolate", "Creamy"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Hot Chocolate", ingredients: ["Chocolate Powder", "(Steamed) Milk"], garnishes: ["Chocolate Powder"], base_spirit: ["Chocolate"], flavor_profile: ["Creamy"]})
+    Coffee({name: "Dalgona Coffee", ingredients: ["Double Espresso", "Brown Sugar", "Milk"], garnishes: ["Coffee", "Sweet", "Creamy"], base_spirit: [], flavor_profile: []})
+    Coffee({name: "Creme Brule Coldbrew", ingredients: ["Coldbrew", "Cream", "Milk", "Brown Sugar"], garnishes: ["Coffee", "Sweet", "Creamy"], base_spirit: [], flavor_profile: []})
+    
     add_odd_element(3)
     
     if (get_flavor_filter().size == 0) {
         add_all_categories(3)
-    }
+    }*/
 
     if (get_flavor_filter().size == 0) {
         add_all_base_spirits()
@@ -632,62 +666,6 @@ async function create_all() {
 }
 
 create_all()
-
-
-/*if (!available_ingredients[formatted_ingredient]){
-                doreturn = true
-                if (formatted_ingredient == "lime" && available_ingredients["lime_juice"]) { 
-                    ingredients[i] = ingredient.replace("½", ".5").replace("¼", ".25").replace("Lime", "")*30+"ml Lime Juice"; 
-                    doreturn = false
-                }
-                else if (formatted_ingredient == "lemon") {
-                    if (available_ingredients["Lemon Juice"]){
-                        ingredients[i] = ingredient.replace("½", ".5").replace("¼", ".25").replace("Lemon", "")*30+"ml Lemon Juice"; 
-                        doreturn = false
-                    } else if (available_ingredients["lime"]){
-                        ingredients[i] = ingredient.replace("Lemon", "Lime")
-                        doreturn = false
-                    } else if (available_ingredients["lime_juice"]) { 
-                        ingredients[i] = ingredient.replace("½", ".5").replace("¼", ".25").replace("Lime", "")*30+"ml Lime Juice"; 
-                        doreturn = false
-                    }
-                }
-                else if ((formatted_ingredient == "simple_sirup" || formatted_ingredient == "brown_sugar") && available_ingredients["white_sugar"]) {
-                    ingredients[i] = ingredient.replace("ml", "g").replace("Simple Sirup", "White Sugar").replace("Brown", "White");
-                    doreturn = false;
-                }
-                else if (formatted_ingredient == "scotch" && available_ingredients["whiskey"]) {
-                    ingredients[i] = ingredient.replace("Scotch", "Whiskey")
-                    doreturn = false;
-                }
-                else if (formatted_ingredient == "honey_sirup") {
-                    if (available_ingredients["honey"]) {
-                        ingredients[i] = ingredient.split("ml")[0]/2 + "ml Honey";
-                        doreturn = false;
-                    } else if (available_ingredients["simple_sirup"]) {
-                        ingredients[i] = ingredient.replace("Honey Sirup", "Simple Sirup");
-                        doreturn = false;
-                    } else if (available_ingredients["white_sugar"]) {
-                        ingredients[i] = ingredient.replace("ml", "g").replace("Honey Sirup", "White Sugar");
-                        doreturn = false;
-                    }
-                }
-                else if (formatted_ingredient == "blanco_tequila" && available_ingredients["silver_tequila"]){
-                    ingredients[i] = ingredient.replace("Blanco Tequila", "Silver Tequila");
-                    doreturn = false;
-                }
-                else if ((formatted_ingredient == "sweet_vermouth" || formatted_ingredient == "dry_vermouth") && available_ingredients["lillet"]) {
-                    ingredient = ingredient.split(" ")[0] + " Lillet"
-                    doreturn = false;
-                }
-                else if (formatted_ingredient == "mint"){
-                    ingredients[i] = "NO MINT LEAVES"
-                    doreturn = false
-                }
-                else if (formatted_ingredient == "coca_cola" && available_ingredients["soda_stream_cola"]){
-                    ingredients[i] = ingredient.replace("Coca Cola", "Cola (SodaStream)")
-                    doreturn = false
-                }*/
 
 // #endregion
 
