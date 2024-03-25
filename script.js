@@ -88,7 +88,7 @@ coffee_added_flavor_profiles = []
 
 drinks_added_base_spirits = []
 
-function Drink({category="Cocktails", name="No Name given", ingredients=[], garnishes=[], base_spirit="Other", flavor_profile=[]}) {
+function Drink({category="Cocktails", name="No Name given", ingredients=[], options=[], garnishes=[], base_spirit="Other", flavor_profile=[]}) {
     if (name.search(document.getElementById(`${current_frame}-search-filter`).value) == -1) {
         return
     }
@@ -216,6 +216,14 @@ x tsp ->
                 drinks_added_base_spirits.push(base_spirit);
             }
         }
+    } else  if (options.length > 0) {
+        for (let o = 0; o < options.length; o++) {
+            formatted_option = options[o].toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+            if (!available_ingredients[formatted_option]) {
+                options.slice(o, 1)
+            }
+        }    
+        every_ingredient = options.length > 0
     } else {
         every_ingredient = available_ingredients[name.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')]
     }
@@ -331,6 +339,15 @@ x tsp ->
                     <p1>Ingredients:</p1>
                     <ul>
                     ${ingredients.map(ingredient => `<li>${ingredient.trim()}</li>`).join('')}
+                    </ul>
+
+                </div>` : ''}
+
+                ${options.length > 0 ? `
+                <div class="options${horizontal}">
+                    <p1>Options:</p1>
+                    <ul>
+                    ${options.map(option => `<li>${option.trim()}</li>`).join('')}
                     </ul>
 
                 </div>` : ''}
