@@ -15,9 +15,11 @@ async function fetchAndStoreIngredients() {
 }
 
 json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
+picture_folder = 'pictures/'
 
 if (window.location.href.search("stauti") != -1) {
     json_url = 'https://raw.githubusercontent.com/Bumes/Stauti-Drinks/main/available-ingredients.json?v='
+    picture_folder = 'https://raw.githubusercontent.com/Bumes/Drinks/main/pictures/'
 }
   
 function fetchIngredients() {
