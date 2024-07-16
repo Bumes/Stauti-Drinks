@@ -120,24 +120,19 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
 
     flavor_filter = get_flavor_filter()
 
-    let is_one_selected_flavor = false
     let is_any_selected_flavor = false
 
     for (const item of flavor_filter) {
         for (let f = 0; f < flavor_profile.length; f++) {
-            if (item.name == flavor_profile[f]) {
+            if (flavor_profile[f].includes(item.name)) {
                 if (item.value === true) {
-                    is_one_selected_flavor = true;
+                    return
                 }
             }
         }
         if (item.value === true) {
             is_any_selected_flavor = true
         }
-    }
-
-    if ((!is_one_selected_flavor) && is_any_selected_flavor) {
-        return
     }
 
     every_ingredient = true;
@@ -182,7 +177,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
                 } else {
                     missing[formatted_ingredient][1] = missing[formatted_ingredient][1].replace(/\d+/, match => (parseInt(match) + 1).toString())
                 }
-                ingredient[i] = current_ingredients[0]
+                ingredients[i] = current_ingredients[0]
             } else {
                 if (chosen_ingredient.search("Missing: ") != -1) {
                     temp = chosen_ingredient.replace("Missing: ", "").replace(/[\d½|\d¼]+(ml|g)? /, '')
@@ -411,6 +406,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
 
                 </div>` : ''}
             </div>` : ''}
+            ${every_ingredient ?  `<button class="order-button" id="order_button" onclick='sendData("${format(name)}")'>Bestellen</button id="order_button">` : `<button>Vormerken</button>`}
     `;
 
     // Add the drink to the correct menu 
@@ -595,6 +591,10 @@ function delete_all() {
     header_elements.forEach(function (element) {
         element.remove();
     });
+    var header_elements = document.querySelectorAll('#order_button');
+    header_elements.forEach(function (element) {
+        element.remove();
+    });
     var drink_area_elements = document.querySelectorAll('.drink');
     drink_area_elements.forEach(function (element) {
         element.remove();
@@ -660,8 +660,6 @@ async function create_all() {
 create_all()
 
 // #endregion
-
-
 
 // #region lukas mode
 
@@ -730,7 +728,7 @@ function upload_new_data(event) {
 lukas_mode_allowed = false
 currently_lukas_mode = false
 
-document.getElementById("toggle_lukas_mode").addEventListener("click", function () {
+/*document.getElementById("toggle_lukas_mode").addEventListener("click", function () {
     if (!lukas_mode_allowed) {
         var password = prompt("Please enter the password:");
         if (password === "ilm") {
@@ -751,9 +749,9 @@ document.getElementById("toggle_lukas_mode").addEventListener("click", function 
     
     bcrypt.hash(plaintextPassword, saltRounds, function(err, hash) {
         console.log(hash)
-    });*/
+    });
 
-});
+});*/
 
 lukas_mode_tab = document.getElementById("lukas_mode")
 
@@ -841,32 +839,22 @@ async function fetchAndStoreLanguages() {
 
 let language;
 
-function update_language() {
-    let userLanguage = navigator.language || navigator.userLanguage;
-    userLanguage = userLanguage.split("-")[0]
-    console.log("Set Language to:")
-    console.log(userLanguage)
-    fetchAndStoreLanguages()
-        .then(languages => {
-            // languages will now contain the actual data after successful fetch
-            if (!languages.hasOwnProperty(userLanguage)) {
-                userLanguage = "en"
-            }
-            language = languages[userLanguage];
-            console.log(language);
-            for (const key in language) {
-                if (typeof(language[key]) != "object") {
-                    const elements = document.querySelectorAll(`#${key}`); // Use querySelectorAll to get all elements
-
-                    if (elements.length > 0) {
-                        for (const element of elements) {
-                            element.textContent = language[key];
-                        }
-                    } else {
-                        console.info(`Element with ID "${key}" not found.`);
-                    }
-                }
-            }
-        })
-        .catch(error => console.error(error));  // Handle errors from fetchLanguages
+function sendData(inputData) {
+    var xhr = new XMLHttpRequest();
+    // 'https://drinks-master.lukas-bumes.de:3000/master'
+    xhr.open('POST', "http://localhost:3000/master", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            console.log('Data sent successfully');
+        }
+    };
+    xhr.onerror = function () {
+        console.error('Error while sending data. Status:', xhr.status, 'Status Text:', xhr.statusText);
+        return;
+    };
+    var data = JSON.stringify({ formatted_name: inputData });
+    console.log("Sending data: " + data);
+    xhr.send(data);
 }
+

@@ -128,3 +128,16 @@ h1 {
 .dropdown.open .dropdown-content {
   display: block;
 }
+
+
+.button {
+  background-color: #3d583d;
+  color: white;
+  border-color:#202720;
+}
+
+.order-button {
+  background-color: #659165;
+  color: #202720;
+  border-color:#202720;
+}
