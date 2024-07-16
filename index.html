@@ -1,129 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
-  
-   <!-- Metadata for the page -->
-     <head>
-          <!-- Title of webpage in the browser -->
-          <title>Drinks</title>
-          <meta charset="UTF-8">
+<!--
+<script>
+     const path = window.location.pathname;
 
-          <link rel="stylesheet" type="text/css" href="drinks.css">
-          <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-     </head>
-  
-     <body>
-          <header>
-               <div class="tabs">
-                    <button class="tab_button" onclick="showTab('drinks_menu')"><label id="alcoholic_area_name"></label></button>
-                    <button class="tab_button" onclick="showTab('mocktails_menu')"><label id="non_alcoholic_area_name"></label></button>
-                    <button class="tab_button" onclick="showTab('shots_menu')"><label id="shots_area_name"></label></button>
-                    <button class="tab_button" onclick="showTab('coffee_menu')"><label id="coffee_area_name"></label></button>
-                    <div></div>
-                    <button class="toggle_lukas_mode" id="toggle_lukas_mode"></button>
-               </div>
-          </header>    
-          <div id="drinks_menu" class="menu">
-               <div class="filter">
-                    <div class="search">
-                         <label class="search_label"><label id="search_text"></label></label>
-                         <input class="search_filter" id="drinks-search-filter" oninput="create_all()"></input>
-     
-                         <div class="dropdown" id="drinks-base-spirit-dropdown" tabindex="1"  onblur='closeDropdown("drinks-base-spirit-dropdown")'>
-                              <button onclick='toggleDropdown("drinks-base-spirit-dropdown")'><label id="base_spirit_text"></label></button>
-                              <div class="dropdown-content" id="drinks-base-spirit-dropdown-content">
-                              </div>
-                         </div>
-                         
-                         <div class="dropdown" id="drinks-category-dropdown" tabindex="0"  onblur='closeDropdown("drinks-category-dropdown")'>
-                              <button onclick='toggleDropdown("drinks-category-dropdown")'><label id="flavor_text"></label></button>
-                              <div class="dropdown-content" id="drinks-category-dropdown-content">
-                              </div>
-                         </div>
+     // Check if the path is '/master'
+     if (path === '/master') {
+          // Load the master homepage content
+          fetch('master.html')
+               .then(response => response.text())
+               .then(html => {
+                    // Replace the current page content with the master homepage content
+                    document.body.innerHTML = html;
+               })
+               .catch(error => {
+                    console.error('Error loading master homepage:', error);
+               });
+     }
+</script>-->
 
-                         <div class="dropdown" id="drinks-availability-options-dropdown" tabindex="2"  onblur='closeDropdown("drinks-availability-options-dropdown")'>
-                              <button onclick='toggleDropdown("drinks-availability-options-dropdown")'><label id="avaliability_text"></label></button>
-                              <div class="dropdown-content" id="drinks-availability-options-dropdown-content">
-                                   <input type="checkbox" name="Available" id="drinks-availability-dropdown" checked="true" onclick="create_all()"><label id="available_text"></label></input>
-                                   <label><input type="checkbox" name="Not Available" id="drinks-not-availability-dropdown" onclick="create_all()"><label id="not_available_text"></label></input></label>
-                              </div>
+<!-- Metadata for the page -->
+
+<head>
+     <!-- Title of webpage in the browser -->
+     <title>Drinks</title>
+     <meta charset="UTF-8">
+
+     <link rel="stylesheet" type="text/css" href="drinks.css">
+     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+     <header>
+          <div class="tabs">
+               <button class="tab_button" onclick="showTab('drinks_menu')"><label
+                         id="alcoholic_area_name"></label></button>
+               <button class="tab_button" onclick="showTab('mocktails_menu')"><label
+                         id="non_alcoholic_area_name"></label></button>
+               <button class="tab_button" onclick="showTab('shots_menu')"><label id="shots_area_name"></label></button>
+               <button class="tab_button" onclick="showTab('coffee_menu')"><label
+                         id="coffee_area_name"></label></button>
+               <div></div>
+               <!--<button class="toggle_lukas_mode" id="toggle_lukas_mode"></button>-->
+          </div>
+     </header>
+     <div id="drinks_menu" class="menu">
+          <div class="filter">
+               <div class="search">
+                    <label class="search_label"><label id="search_text"></label></label>
+                    <input class="search_filter" id="drinks-search-filter" oninput="create_all()"></input>
+
+                    <div class="dropdown" id="drinks-base-spirit-dropdown" tabindex="1"
+                         onblur='closeDropdown("drinks-base-spirit-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("drinks-base-spirit-dropdown")'><label
+                                   id="base_spirit_text"></label></button>
+                         <div class="dropdown-content" id="drinks-base-spirit-dropdown-content">
+                         </div>
+                    </div>
+
+                    <div class="dropdown" id="drinks-category-dropdown" tabindex="0"
+                         onblur='closeDropdown("drinks-category-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("drinks-category-dropdown")'><label
+                                   id="flavor_text"></label></button>
+                         <div class="dropdown-content" id="drinks-category-dropdown-content">
+                         </div>
+                    </div>
+
+                    <div class="dropdown" id="drinks-availability-options-dropdown" tabindex="2"
+                         onblur='closeDropdown("drinks-availability-options-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("drinks-availability-options-dropdown")'><label
+                                   id="avaliability_text"></label></button>
+                         <div class="dropdown-content" id="drinks-availability-options-dropdown-content">
+                              <input type="checkbox" name="Available" id="drinks-availability-dropdown" checked="true"
+                                   onclick="create_all()"><label id="available_text"></label></input>
+                              <label><input type="checkbox" name="Not Available" id="drinks-not-availability-dropdown"
+                                        onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
                </div>
           </div>
-          <div id="mocktails_menu" class="menu">
-               <div class="filter">
-                    <div class="search">
-                         <label class="search_label"><label id="search_text"></label></label>
-                         <input class="search_filter" id="mocktails-search-filter" oninput="create_all()"></input>
+     </div>
+     <div id="mocktails_menu" class="menu">
+          <div class="filter">
+               <div class="search">
+                    <label class="search_label"><label id="search_text"></label></label>
+                    <input class="search_filter" id="mocktails-search-filter" oninput="create_all()"></input>
 
-                         <div class="dropdown" id="mocktails-category-dropdown" tabindex="0"  onblur='closeDropdown("mocktails-category-dropdown")'>
-                              <button onclick='toggleDropdown("mocktails-category-dropdown")'><label id="flavor_text"></label></button>
-                              <div class="dropdown-content" id="mocktails-category-dropdown-content">
-                              </div>
+                    <div class="dropdown" id="mocktails-category-dropdown" tabindex="0"
+                         onblur='closeDropdown("mocktails-category-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("mocktails-category-dropdown")'><label
+                                   id="flavor_text"></label></button>
+                         <div class="dropdown-content" id="mocktails-category-dropdown-content">
                          </div>
+                    </div>
 
-                         <div class="dropdown" id="mocktails-availability-options-dropdown" tabindex="2"  onblur='closeDropdown("mocktails-availability-options-dropdown")'>
-                              <button onclick='toggleDropdown("mocktails-availability-options-dropdown")'><label id="avaliability_text"></label></button>
-                              <div class="dropdown-content" id="mocktails-availability-options-dropdown-content">
-                                   <label><input type="checkbox" name="Available" id="mocktails-availability-dropdown" checked="true" onclick="create_all()"><label id="available_text"></label></input></label>
-                                   <label><input type="checkbox" name="Not Available" id="mocktails-not-availability-dropdown" onclick="create_all()"><label id="not_available_text"></label></input></label>
-                              </div>
+                    <div class="dropdown" id="mocktails-availability-options-dropdown" tabindex="2"
+                         onblur='closeDropdown("mocktails-availability-options-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("mocktails-availability-options-dropdown")'><label
+                                   id="avaliability_text"></label></button>
+                         <div class="dropdown-content" id="mocktails-availability-options-dropdown-content">
+                              <label><input type="checkbox" name="Available" id="mocktails-availability-dropdown"
+                                        checked="true" onclick="create_all()"><label
+                                        id="available_text"></label></input></label>
+                              <label><input type="checkbox" name="Not Available"
+                                        id="mocktails-not-availability-dropdown" onclick="create_all()"><label
+                                        id="not_available_text"></label></input></label>
                          </div>
                     </div>
                </div>
           </div>
-          <div id="shots_menu" class="menu">
-               <div class="filter">
-                    <div class="search">
-                         <label class="search_label"><label id="search_text"></label></label>
-                         <input class="search_filter" id="shots-search-filter" oninput="create_all()"></input>
-                         
-                         <div class="dropdown" id="shots-category-dropdown" tabindex="0"  onblur='closeDropdown("shots-category-dropdown")'>
-                              <button onclick='toggleDropdown("shots-category-dropdown")'><label id="flavor_text"></label></button>
-                              <div class="dropdown-content" id="shots-category-dropdown-content">
-                              </div>
-                         </div>
+     </div>
+     <div id="shots_menu" class="menu">
+          <div class="filter">
+               <div class="search">
+                    <label class="search_label"><label id="search_text"></label></label>
+                    <input class="search_filter" id="shots-search-filter" oninput="create_all()"></input>
 
-                         <div class="dropdown" id="shots-availability-options-dropdown" tabindex="2"  onblur='closeDropdown("shots-availability-options-dropdown")'>
-                              <button onclick='toggleDropdown("shots-availability-options-dropdown")'><label id="avaliability_text"></label></button>
-                              <div class="dropdown-content" id="shots-availability-options-dropdown-content">
-                                   <label><input type="checkbox" name="Available" id="shots-availability-dropdown" checked="true" onclick="create_all()"><label id="available_text"></label></input></label>
-                                   <label><input type="checkbox" name="Not Available" id="shots-not-availability-dropdown" onclick="create_all()"><label id="not_available_text"></label></input></label>
-                              </div>
+                    <div class="dropdown" id="shots-category-dropdown" tabindex="0"
+                         onblur='closeDropdown("shots-category-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("shots-category-dropdown")'><label
+                                   id="flavor_text"></label></button>
+                         <div class="dropdown-content" id="shots-category-dropdown-content">
+                         </div>
+                    </div>
+
+                    <div class="dropdown" id="shots-availability-options-dropdown" tabindex="2"
+                         onblur='closeDropdown("shots-availability-options-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("shots-availability-options-dropdown")'><label
+                                   id="avaliability_text"></label></button>
+                         <div class="dropdown-content" id="shots-availability-options-dropdown-content">
+                              <label><input type="checkbox" name="Available" id="shots-availability-dropdown"
+                                        checked="true" onclick="create_all()"><label
+                                        id="available_text"></label></input></label>
+                              <label><input type="checkbox" name="Not Available" id="shots-not-availability-dropdown"
+                                        onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
                </div>
           </div>
-          <div id="coffee_menu" class="menu">
-               <div class="filter">
-                    <div class="search">
-                         <label class="search_label"><label id="search_text"></label></label>
-                         <input class="search_filter" id="coffee-search-filter" oninput="create_all()"></input>
-     
-                         <div class="dropdown" id="coffee-category-dropdown" tabindex="0"  onblur='closeDropdown("coffee-category-dropdown")'>
-                              <button onclick='toggleDropdown("coffee-category-dropdown")'><label id="flavor_text"></label></button>
-                              <div class="dropdown-content" id="coffee-category-dropdown-content">
-                              </div>
-                         </div>
+     </div>
+     <div id="coffee_menu" class="menu">
+          <div class="filter">
+               <div class="search">
+                    <label class="search_label"><label id="search_text"></label></label>
+                    <input class="search_filter" id="coffee-search-filter" oninput="create_all()"></input>
 
-                         <div class="dropdown" id="coffee-availability-options-dropdown" tabindex="2"  onblur='closeDropdown("coffee-availability-options-dropdown")'>
-                              <button onclick='toggleDropdown("coffee-availability-options-dropdown")'><label id="avaliability_text"></label></button>
-                              <div class="dropdown-content" id="coffee-availability-options-dropdown-content">
-                                   <label><input type="checkbox" name="Available" id="coffee-availability-dropdown" checked="true" onclick="create_all()"><label id="available_text"></label></input></label>
-                                   <label><input type="checkbox" name="Not Available" id="coffee-not-availability-dropdown" onclick="create_all()"><label id="not_available_text"></label></input></label>
-                              </div>
+                    <div class="dropdown" id="coffee-category-dropdown" tabindex="0"
+                         onblur='closeDropdown("coffee-category-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("coffee-category-dropdown")'><label
+                                   id="flavor_text"></label></button>
+                         <div class="dropdown-content" id="coffee-category-dropdown-content">
+                         </div>
+                    </div>
+
+                    <div class="dropdown" id="coffee-availability-options-dropdown" tabindex="2"
+                         onblur='closeDropdown("coffee-availability-options-dropdown")'>
+                         <button class="button" onclick='toggleDropdown("coffee-availability-options-dropdown")'><label
+                                   id="avaliability_text"></label></button>
+                         <div class="dropdown-content" id="coffee-availability-options-dropdown-content">
+                              <label><input type="checkbox" name="Available" id="coffee-availability-dropdown"
+                                        checked="true" onclick="create_all()"><label
+                                        id="available_text"></label></input></label>
+                              <label><input type="checkbox" name="Not Available" id="coffee-not-availability-dropdown"
+                                        onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
                </div>
           </div>
-          <div id="lukas_mode" class="menu">
-          </div>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-          <script src="script.js"></script>
+     </div>
+     <!--<div id="lukas_mode" class="menu">-->
+     </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+     <script src="language.js"></script>
+     <script src="script.js"></script>
 
-          <script>          
-               update_language();
-               showTab('drinks_menu');
-          </script>
-     </body>
+     <script>
+          update_language();
+          showTab('drinks_menu');
+     </script>
+</body>
+
 </html>
