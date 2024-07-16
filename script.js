@@ -406,7 +406,6 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
 
                 </div>` : ''}
             </div>` : ''}
-            ${every_ingredient ?  `<button class="order-button" id="order_button" onclick='sendData("${format(name)}")'>Bestellen</button id="order_button">` : `<button>Vormerken</button>`}
     `;
 
     // Add the drink to the correct menu 
