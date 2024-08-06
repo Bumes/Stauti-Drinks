@@ -687,8 +687,8 @@ async function create_all() {
             } else {
                 recommended_drinks = drinks[category][0].recommended.luck
             }
-            console.log("Recommended drinks:" + recommended_drinks + ", " + recommended_drinks == [] + ", " + recommended_drinks == "")
-            if (recommended_drinks == [] || recommended_drinks == [] || !recommended_drinks) {
+            console.log("Recommended drinks:" + recommended_drinks + ", " + (recommended_drinks == []).toString() + ", " + (recommended_drinks == "").toString())
+            if (recommended_drinks == [] || recommended_drinks == "" || !recommended_drinks) {
                     break;
             }
             if (recommended_drinks) {
