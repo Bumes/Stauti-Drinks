@@ -37,9 +37,9 @@
                <button class="tab_button" onclick="showTab('mocktails_menu')"><label
                          id="non_alcoholic_area_name"></label></button>
                <button class="tab_button" onclick="showTab('shots_menu')"><label id="shots_area_name"></label></button>
-               <button class="tab_button" onclick="showTab('coffee_menu')"><label
-                         id="coffee_area_name"></label></button>
-               <div></div>
+               <button id="coffee_button" class="tab_button" onclick="showTab('coffee_menu')" style="display: none;"><label id="coffee_area_name"></label></button>
+               <script>if (window.location.href.search("stauti") == -1) { document.getElementById("coffee_button").style.display = "block" }</script>
+
                <!--<button class="toggle_lukas_mode" id="toggle_lukas_mode"></button>-->
           </div>
      </header>
