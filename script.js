@@ -697,7 +697,11 @@ async function create_all() {
                 recommendedDiv.classList.add("drink");
 
                 // Populate the drink container
-                recommendedDiv.innerHTML = `<h1 id="recommended_text" class="recommended-header">${"Recommended"}`
+                if (window.location.href.search("stauti") != -1) {
+                    recommendedDiv.innerHTML = `<h1 id="stauti_recommended_text" class="recommended-header">${"Recommended"}`
+                } else {
+                    recommendedDiv.innerHTML = `<h1 id="recommended_text" class="recommended-header">${"Recommended"}`
+                }
 
                 recommendedDiv.style.display = 'flex'; // Use flex layout to display them side by side
                 recommendedDiv.style.width = '98%'; // Use flex layout to display them side by side
