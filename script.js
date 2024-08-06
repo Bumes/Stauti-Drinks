@@ -93,7 +93,7 @@ coffee_added_flavor_profiles = []
 drinks_added_base_spirits = []
 
 function Drink({ category = "Cocktails", name = "No Name given", ingredients = [], options = [], garnishes = [], base_spirit = "Other", flavor_profile = [] }) {
-    if (name.toLowerCase().search(document.getElementById(`${current_frame}-search-filter`).value.toLowerCase()) == -1) {
+    if (name.toLowerCase().search(document.getElementById(`${current_frame}-search-filter`).value.toLowerCase()) == -1 || name == "No Name given") {
         return
     }
     if (current_frame == "drinks") {
