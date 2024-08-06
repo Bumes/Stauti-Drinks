@@ -687,6 +687,9 @@ async function create_all() {
             } else {
                 recommended_drinks = drinks[category][0].recommended.luck
             }
+            if (recommended_drinks == []) {
+                    break;
+            }
             if (recommended_drinks) {
                 
                 recommendedDiv = document.createElement("div");
