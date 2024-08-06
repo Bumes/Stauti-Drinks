@@ -687,6 +687,7 @@ async function create_all() {
             } else {
                 recommended_drinks = drinks[category][0].recommended.luck
             }
+            console.log("Recommended drinks:" + recommended_drinks)
             if (recommended_drinks == []) {
                     break;
             }
