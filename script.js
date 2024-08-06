@@ -554,6 +554,10 @@ function add_all_categories(category) {
     }
 
     if (my_element_id !== null) {
+        let element = document.getElementById(my_element_id);
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
         for (let f = 0; f < flavor_profile.length; f++) {
             var newOption = document.createElement('label');
 
@@ -731,11 +735,10 @@ async function create_all() {
                 spaceDiv = document.createElement("div");
 
                 // Populate the drink container
-                spaceDiv.innerHTML = `<h1 class="seperator">${""}`
+                spaceDiv.innerHTML = `<style>.seperator { height: 100px}</style><h1 class="seperator">`
 
                 spaceDiv.style.display = 'flex'; // Use flex layout to display them side by side
                 spaceDiv.style.width = '98%'; // Use flex layout to display them side by side
-                spaceDiv.style.height = '100px'; // Use flex layout to display them side by side
 
                 // Set flex property on saved_html to take up more space (adjust as needed)
                 spaceDiv.style.flex = '1';
