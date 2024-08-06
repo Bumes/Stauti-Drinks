@@ -697,7 +697,7 @@ async function create_all() {
                 recommendedDiv.classList.add("drink");
 
                 // Populate the drink container
-                recommendedDiv.innerHTML = `<h1 class="recommended-header">${"Recommended"}`
+                recommendedDiv.innerHTML = `<h1 id="recommended_text" class="recommended-header">${"Recommended"}`
 
                 recommendedDiv.style.display = 'flex'; // Use flex layout to display them side by side
                 recommendedDiv.style.width = '98%'; // Use flex layout to display them side by side
