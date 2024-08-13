@@ -3,7 +3,19 @@
 // #region JSON 
 let available_ingredients;
 let drinks;
-let current_frame = "drinks"
+let current_frame = "cocktails"
+
+let cocktails_availability_true = false
+let cocktails_availability_false = false
+
+let mocktails_availability_true = false
+let mocktails_availability_false = false
+
+let shots_availability_true = false
+let shots_availability_false = false
+
+let coffee_availability_true = false
+let coffee_availability_false = false
 
 
 json_url = 'https://raw.githubusercontent.com/Bumes/Drinks/main/available-ingredients.json?v='
@@ -81,73 +93,52 @@ function sortIngredients(arr) {
 }
 
 function format(text) {
-    return text.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
+    return text.toLowerCase().split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("double ", "").replace("steamed ", "").replace("dashes ", "").replace("dash ", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/ /g, '_').replace(/[()]/g, '')
 }
 
 
-drinks_added_flavor_profiles = []
+cocktails_added_flavor_profiles = []
 mocktails_added_flavor_profiles = []
 shots_added_flavor_profiles = []
 coffee_added_flavor_profiles = []
 
-drinks_added_base_spirits = []
+cocktails_added_ingredients = []
+mocktails_added_ingredients = []
+shots_added_ingredients = []
+coffee_added_ingredients = []
 
-function Drink({ category = "Cocktails", name = "No Name given", ingredients = [], options = [], garnishes = [], base_spirit = "Other", flavor_profile = [] }) {
+function Drink({ category = "Cocktails", name = "No Name given", ingredients = [], options = [], garnishes = [], flavor_profile = [] }) {
     if (name.toLowerCase().search(document.getElementById(`${current_frame}-search-filter`).value.toLowerCase()) == -1 || name == "No Name given") {
-        return
-    }
-    if (current_frame == "drinks") {
-        base_spirit_filter = get_base_spirits_filter()
-
-        let is_selected_base_spirit = false
-        let is_any_selected_base_spirit = false
-
-        for (const item of base_spirit_filter) {
-            if (item.name === base_spirit) {
-                if (item.value === true) {
-                    is_selected_base_spirit = true;
-                }
-            }
-            if (item.value === true) {
-                is_any_selected_base_spirit = true
-            }
-        }
-
-        if (is_selected_base_spirit !== is_any_selected_base_spirit) {
-            return
-        }
+        return false
     }
 
     flavor_filter = get_flavor_filter()
 
-    let is_any_selected_flavor = false
+    const flavor_filter_names = [...flavor_filter]
+        .filter(item => item.value === true)
+        .map(item => format(item.name.split(" ").join(" ")));
 
-    for (const item of flavor_filter) {
-        for (let f = 0; f < flavor_profile.length; f++) {
-            if (flavor_profile[f].includes(item.name)) {
-                if (item.value === true) {
-                    return
-                }
-            }
-        }
-        if (item.value === true) {
-            is_any_selected_flavor = true
-        }
+    if (!flavor_filter_names.every(element => flavor_profile.includes(element))) {
+        return false
     }
 
     every_ingredient = true;
     let language_name = ""
+
+    chosen_ingredients = []
 
     if (ingredients.length > 0) {
         for (let g = 0; g < garnishes.length; g++) {
             garnishes[g] = garnishes[g].split("//")[0]
         }
         for (let i = 0; i < ingredients.length; i++) {
+
             doreturn = true;
             let ingredient = ingredients[i];
             let chosen_ingredient = ingredient
             current_ingredients = ingredient.split(" -> ")
             let j
+
             for (j = 0; j < current_ingredients.length; j++) {
                 formatted_ingredient = format(current_ingredients[j])
                 chosen_ingredient = current_ingredients[j]
@@ -169,6 +160,8 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
                 }
             }
 
+            chosen_ingredients[i] = chosen_ingredient;
+
 
             if (doreturn) {
                 every_ingredient = false
@@ -186,8 +179,13 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
                 }
                 language_ingredient = temp
                 formatted_temp = format(temp)
-                if (language["ingredients"].hasOwnProperty(formatted_temp)) {
-                    language_ingredient = language["ingredients"][formatted_temp]
+                try {
+                    if (language["ingredients"].hasOwnProperty(formatted_temp)) {
+                        language_ingredient = language["ingredients"][formatted_temp]
+                    } else if (formatted_temp != "") {
+                        console.log("Language is missing " + formatted_temp + " as an ingredient.")
+                    }
+                } catch {
                 }
                 ingredients[i] = chosen_ingredient.replace(temp, language_ingredient)
             }
@@ -214,15 +212,32 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
         language_name = temp
         if (language["ingredients"].hasOwnProperty(formatted_option)) {
             language_name = language["ingredients"][formatted_option]
+        } else {
+            console.log("Language is missing " + formatted_option + " as a name.")
         }
         language_name = name.replace(temp, language_name)
     }
 
+    formatted_chosen_ingredients = []
+
+    for (let i = 0; i < chosen_ingredients.length; i++) {
+        formatted_chosen_ingredients[i] = format(chosen_ingredients[i])
+    }
+
+    ingredient_filter = get_ingredients_filter()
+
+    const filteredNames = [...ingredient_filter]
+        .filter(item => item.value === true)
+        .map(item => format(item.name.split(" ").join(" ")));
+
+    if (!filteredNames.every(element => formatted_chosen_ingredients.includes(element))) {
+        return false
+    }
 
     for (let f = 0; f < flavor_profile.length; f++) {
         if (category == "Cocktails") {
-            if (!(drinks_added_flavor_profiles.includes(flavor_profile[f]))) {
-                drinks_added_flavor_profiles.push(flavor_profile[f]);
+            if (!(cocktails_added_flavor_profiles.includes(flavor_profile[f]))) {
+                cocktails_added_flavor_profiles.push(flavor_profile[f]);
             }
         } else if (category == "Mocktails") {
             if (!(mocktails_added_flavor_profiles.includes(flavor_profile[f]))) {
@@ -238,9 +253,6 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
             }
         }
     }
-    if (!(drinks_added_base_spirits.includes(base_spirit)) & base_spirit !== null) {
-        drinks_added_base_spirits.push(base_spirit);
-    }
     if (options.length > 0) {
         for (let o = 0; o < options.length; o++) {
             formatted_option = format(options[o])
@@ -252,6 +264,8 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
                 language_option = temp
                 if (language["ingredients"].hasOwnProperty(formatted_option)) {
                     language_option = language["ingredients"][formatted_option]
+                } else {
+                    console.log("Language is missing " + formatted_option + " as an option")
                 }
                 options[o] = options[o].replace(temp, language_option)
             }
@@ -263,11 +277,33 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
 
     if (every_ingredient) {
         if (!document.getElementById(`${current_frame}-availability-dropdown`).checked) {
-            return
+            return false
         }
     } else {
         if (!document.getElementById(`${current_frame}-not-availability-dropdown`).checked) {
-            return
+            return false
+        }
+    }
+
+    for (i in chosen_ingredients) {
+        let filter_ingredient = chosen_ingredients[i].split(" // ")[0].split("// ")[0].split(" //")[0].split("//")[0].replace("Double ", "").replace("Steamed ", "").replace("Dashes", "").replace("Dash", "").replace(/[\d½|\d¼]+(ml|g)? /, '').replace(/[()]/g, '').replace(/^\s+|\s+$/g, '')
+
+        if (category == "Cocktails") {
+            if (!(cocktails_added_ingredients.includes(filter_ingredient)) & filter_ingredient !== null & filter_ingredient.search("Missing") == -1) {
+                cocktails_added_ingredients.push(filter_ingredient);
+            }
+        } else if (category == "Mocktails") {
+            if (!(mocktails_added_ingredients.includes(filter_ingredient)) & filter_ingredient !== null & filter_ingredient.search("Missing") == -1) {
+                mocktails_added_ingredients.push(filter_ingredient);
+            }
+        } else if (category == "Shots") {
+            if (!(shots_added_ingredients.includes(filter_ingredient)) & filter_ingredient !== null & filter_ingredient.search("Missing") == -1) {
+                shots_added_ingredients.push(filter_ingredient);
+            }
+        } else if (category == "Coffee") {
+            if (!(coffee_added_ingredients.includes(filter_ingredient)) & filter_ingredient !== null & filter_ingredient.search("Missing") == -1) {
+                coffee_added_ingredients.push(filter_ingredient);
+            }
         }
     }
 
@@ -299,7 +335,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
         //}
     }
 
-    const drinks_menu = document.getElementById("drinks_menu");
+    const cocktails_menu = document.getElementById("cocktails_menu");
     const mocktail_menu = document.getElementById("mocktails_menu");
     const shots_menu = document.getElementById("shots_menu");
     const coffee_menu = document.getElementById("coffee_menu");
@@ -353,7 +389,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
         <div class="image-area${horizontal}">
 
             <div class="image-container">
-                <img src="${picture_folder}${name.toLowerCase().replace(/ *\([^)]*\)/g, "").trim().replace(/\s+$/g, "").replace("ñ", "n").split(' ').join('-').split("'").join('') + ".png"}" alt="${name + " Picture"}">
+                <img src="${picture_folder}${name.toLowerCase().replace(/ *\([^)]*\)/g, "").trim().replace(/\s+$/g, "").replace("ñ", "n").replace("é", "e").replace("’", "").split(' ').join('-').split("'").join('') + ".png"}" alt="${name + " Picture"}">
             </div>
 
             ${flavor_profile.length > 0 || ingredients.length > 0 || options.length > 0 ? `
@@ -364,16 +400,17 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
                     <ul>
                         ${flavor_profile.map(flavor => {
         let formatted_flavor = format(flavor);
-        let temp = flavor.replace(/[\d½|\d¼]+(ml|g)? /, '');
+        let temp = flavor.replace(/[\d½|\d¼]+(ml|cl|g)? /, '');
         let language_flavor = temp;
         if (language["flavor_profile"].hasOwnProperty(formatted_flavor)) {
             language_flavor = language["flavor_profile"][formatted_flavor];
+        } else {
+            console.log("Language is missing " + formatted_flavor + " as a flavor profile.")
         }
-        flavor = flavor.replace(temp, language_flavor);
-        return `<li>${flavor.trim()}</li>`;
+        reflavor = flavor.replace(temp, language_flavor);
+        return `<li>${reflavor.trim()}</li>`;
     }).join('')}
                     </ul>
-
                 </div>` : ''}
 
                 ${ingredients.length > 0 ? `
@@ -406,8 +443,8 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
 
                 </div>` : ''}
             </div>` : ''}
-            `;
-    // ${every_ingredient ? `<button class="order-button" id="order_button" onclick='sendData("${format(name)}")'>Bestellen</button id="order_button">` : `<button>Vormerken</button>`}
+            ${every_ingredient ? `<button class="order-button" id="order_button" onclick='sendData("${format(name)}")'>Order</button>` : `<button class="order-button" id="pre_order_button" onclick='sendData("${format(name)}>Pre-Order</button>`}
+    `;
 
     // Add the drink to the correct menu 
     if (horizontal == "-horizontal") {
@@ -427,7 +464,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
             wrapperDiv.appendChild(drinkDiv);
 
             if (category == "Cocktails") {
-                drinks_menu.appendChild(wrapperDiv);
+                cocktails_menu.appendChild(wrapperDiv);
             }
             else if (category == "Mocktails") {
                 mocktail_menu.appendChild(wrapperDiv);
@@ -451,7 +488,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
         // Append both saved_html and drinkDiv to the wrapper
         wrapperDiv.appendChild(drinkDiv);
         if (category == "Cocktails") {
-            drinks_menu.appendChild(wrapperDiv);
+            cocktails_menu.appendChild(wrapperDiv);
         }
         else if (category == "Mocktails") {
             mocktail_menu.appendChild(wrapperDiv);
@@ -463,6 +500,7 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
             coffee_menu.appendChild(wrapperDiv);
         }
     }
+    return true
 }
 
 function add_odd_element(category) {
@@ -470,7 +508,7 @@ function add_odd_element(category) {
     // Check if saved_html is not empty after all iterations
     if (saved_html !== "") {
 
-        const drinks_menu = document.getElementById("drinks_menu");
+        const cocktails_menu = document.getElementById("cocktails_menu");
         const mocktail_menu = document.getElementById("mocktails_menu");
         const shots_menu = document.getElementById("shots_menu");
         const coffee_menu = document.getElementById("coffee_menu");
@@ -486,7 +524,7 @@ function add_odd_element(category) {
         wrapperDiv.appendChild(saved_html);
 
         if (category == "Cocktails") {
-            drinks_menu.appendChild(wrapperDiv);
+            cocktails_menu.appendChild(wrapperDiv);
         }
         else if (category == "Mocktails") {
             mocktail_menu.appendChild(wrapperDiv);
@@ -501,26 +539,42 @@ function add_odd_element(category) {
     }
 }
 
-function add_all_base_spirits() {
+function add_all_ingredients(category) {
 
-    drinks_added_base_spirits.sort()
-    const index = drinks_added_base_spirits.indexOf("Other");
-    if (index !== -1) {
-        drinks_added_base_spirits.push(drinks_added_base_spirits.splice(index, 1)[0]);
+    if (category == "cocktails") {
+        ingredients = cocktails_added_ingredients.sort()
+    } else if (category == "mocktails") {
+        ingredients = mocktails_added_ingredients.sort()
+    } else if (category == "shots") {
+        ingredients = shots_added_ingredients.sort()
+    } else if (category == "coffee") {
+        ingredients = coffee_added_ingredients.sort()
     }
 
-    for (let b = 0; b < drinks_added_base_spirits.length; b++) {
+
+    delete_all_ingredients(category)
+
+    for (let b = 0; b < ingredients.length; b++) {
         var newOption = document.createElement('label');
-        newOption.innerHTML = `<input type="checkbox" name="${drinks_added_base_spirits[b]}" onchange="create_all()"> ${drinks_added_base_spirits[b]}`;
+        newOption.innerHTML = `<input type="checkbox" name="${ingredients[b]}" onchange="create_all()"> ${ingredients[b]}`;
         // newOption.addEventListener('change', (event) => {create_all()})
-        document.getElementById('drinks-base-spirit-dropdown-content').appendChild(newOption);
-        document.getElementById('drinks-base-spirit-dropdown-content').appendChild(document.createElement('br'));
+        document.getElementById(`${category}-ingredients-dropdown-content`).appendChild(newOption);
+        document.getElementById(`${category}-ingredients-dropdown-content`).appendChild(document.createElement('br'));
     }
 }
 
-function get_base_spirits_filter() {
+function delete_all_ingredients(category) {
+    const element = document.getElementById(`${category}-ingredients-dropdown-content`);
+
+    while (element.firstChild !== null) {
+        element.removeChild(element.firstChild);
+    }
+}
+
+
+function get_ingredients_filter() {
     const checkboxSet = new Set();
-    const checkboxes = document.querySelectorAll(`#${current_frame}-base-spirit-dropdown-content input[type="checkbox"]`);
+    const checkboxes = document.querySelectorAll(`#${current_frame}-ingredients-dropdown-content input[type="checkbox"]`);
 
     checkboxes.forEach(checkbox => {
         checkboxSet.add({ name: checkbox.name, value: checkbox.checked });
@@ -532,10 +586,10 @@ function get_base_spirits_filter() {
 function add_all_categories(category) {
     let my_element_id = null
     if (category == "Cocktails") {
-        drinks_added_flavor_profiles.sort()
-        flavor_profile = drinks_added_flavor_profiles
+        cocktails_added_flavor_profiles.sort()
+        flavor_profile = cocktails_added_flavor_profiles
         dropdownContent = document.getElementById("dropdown-content")
-        my_element_id = 'drinks-category-dropdown-content'
+        my_element_id = 'cocktails-category-dropdown-content'
     } else if (category == "Mocktails") {
         mocktails_added_flavor_profiles.sort()
         flavor_profile = mocktails_added_flavor_profiles
@@ -567,6 +621,8 @@ function add_all_categories(category) {
             language_flavor = temp
             if (language["flavor_profile"].hasOwnProperty(formatted_flavor)) {
                 language_flavor = language["flavor_profile"][formatted_flavor]
+            } else {
+                console.log("Language is missing " + formatted_option + " as an flavor option.")
             }
             name = name.replace(temp, language_flavor)
 
@@ -611,20 +667,23 @@ function delete_all() {
     horizontal_elements.forEach(function (element) {
         element.remove();
     });
-    var seperator_elements = document.querySelectorAll('.seperator');
-    seperator_elements.forEach(function (element) {
-        element.remove();
-    });
-    var recommended_elements = document.querySelectorAll('.recommended-header');
-    recommended_elements.forEach(function (element) {
-        element.remove();
+    var drink_types = ['cocktails', 'mocktails', 'shots', 'coffee'];
+    drink_types.forEach(function (type) {
+        var elements = document.querySelectorAll('.' + type + '-other-drinks-header');
+        elements.forEach(function (element) {
+            element.remove();
+        });
+        var elements = document.querySelectorAll('.' + type + '-recommended-header');
+        elements.forEach(function (element) {
+            element.remove();
+        });
     });
 }
 
 
 
-function Cocktail({ name, ingredients, garnishes, base_spirit, flavor_profile }) {
-    Drink(0, name, ingredients, garnishes, base_spirit, flavor_profile)
+function Cocktail({ name, ingredients, garnishes, flavor_profile }) {
+    Drink(0, name, ingredients, garnishes, flavor_profile)
 }
 
 function Mocktail({ name, ingredients, garnishes, flavor_profile }) {
@@ -656,7 +715,7 @@ async function create_all() {
         add_odd_element(category)
         if (get_flavor_filter().size == 0) {
             if (idx == 0) {
-                add_all_base_spirits()
+                add_all_ingredients()
             }
             add_all_categories(category)
         }
@@ -673,14 +732,18 @@ async function create_all() {
     await fetchAndStoreIngredients();
     await fetchAndStoreDrinks();
 
+    cocktails_added_ingredients = [];
     delete_all()
 
     let idx = 0;
     let processedDrinks = new Set();
 
+
     // First process recommended drinks under "luck"
     for (const category in drinks) {
-        
+
+        added_recommended_drinks = []
+
         if (drinks[category][0].recommended) {
             if (window.location.href.search("stauti") != -1) {
                 recommended_drinks = drinks[category][0].recommended.stauti
@@ -688,18 +751,18 @@ async function create_all() {
                 recommended_drinks = drinks[category][0].recommended.luck
             }
             if (recommended_drinks == [] || recommended_drinks == "" || !recommended_drinks) {
-                    break;
+                break;
             }
             if (recommended_drinks) {
-                
+
                 recommendedDiv = document.createElement("div");
                 recommendedDiv.classList.add("drink");
 
                 // Populate the drink container
                 if (window.location.href.search("stauti") != -1) {
-                    recommendedDiv.innerHTML = `<h1 id="stauti_recommended_text" class="recommended-header">${"Recommended"}`
+                    recommendedDiv.innerHTML = `<h1 id="stauti_recommended_text" class="${category.toLowerCase()}-recommended-header">Recommended`
                 } else {
-                    recommendedDiv.innerHTML = `<h1 id="recommended_text" class="recommended-header">${"Recommended"}`
+                    recommendedDiv.innerHTML = `<h1 id="recommended_text" class="${category.toLowerCase()}-recommended-header">Recommended`
                 }
 
                 recommendedDiv.style.display = 'flex'; // Use flex layout to display them side by side
@@ -709,7 +772,7 @@ async function create_all() {
                 recommendedDiv.style.flex = '1';
 
                 if (category == "Cocktails") {
-                    drinks_menu.appendChild(recommendedDiv);
+                    cocktails_menu.appendChild(recommendedDiv);
                 }
                 else if (category == "Mocktails") {
                     mocktail_menu.appendChild(recommendedDiv);
@@ -731,58 +794,109 @@ async function create_all() {
                         if (!processedDrinks.has(recommended_drink)) {
                             processedDrinks.add(recommended_drink);
                             recommended_drink["category"] = category;
-                            Drink(recommended_drink);
+                            showing = Drink(recommended_drink);
+                            if (showing === true) {
+                                added_recommended_drinks.push(recommended_drink)
+                            }
                         }
                     }
                 });
 
-
                 add_odd_element(category);
 
-                spaceDiv = document.createElement("div");
+                if (added_recommended_drinks.length == 0) {
+                    var recommended_elements = document.querySelectorAll(`.${category.toLowerCase()}-recommended-header`);
+                    recommended_elements.forEach(function (element) {
+                        element.remove();
+                    });
+                } else {
 
-                // Populate the drink container
-                spaceDiv.innerHTML = `<style>.seperator { height: 100px}</style><h1 class="seperator">`
+                    other_drinks_div = document.createElement("div");
+                    other_drinks_div.classList.add("drink");
 
-                spaceDiv.style.display = 'flex'; // Use flex layout to display them side by side
-                spaceDiv.style.width = '98%'; // Use flex layout to display them side by side
+                    // Populate the drink container
+                    other_drinks_div.innerHTML = `<h1 id="other_drinks_text" class="${category.toLowerCase()}-other-drinks-header">Other Drinks`
 
-                // Set flex property on saved_html to take up more space (adjust as needed)
-                spaceDiv.style.flex = '1';
+                    other_drinks_div.style.display = 'flex'; // Use flex layout to display them side by side
+                    other_drinks_div.style.width = '98%'; // Use flex layout to display them side by side
 
-                if (category == "Cocktails") {
-                    drinks_menu.appendChild(spaceDiv);
+                    // Set flex property on saved_html to take up more space (adjust as needed)
+                    other_drinks_div.style.flex = '1';
+
+                    if (category == "Cocktails") {
+                        cocktails_menu.appendChild(other_drinks_div);
+                    }
+                    else if (category == "Mocktails") {
+                        mocktail_menu.appendChild(other_drinks_div);
+                    }
+                    else if (category == "Shots") {
+                        shots_menu.appendChild(other_drinks_div);
+                    }
+                    else if (category == "Coffee") {
+                        coffee_menu.appendChild(other_drinks_div);
+                    }
+                    break;
                 }
-                else if (category == "Mocktails") {
-                    mocktail_menu.appendChild(spaceDiv);
-                }
-                else if (category == "Shots") {
-                    shots_menu.appendChild(spaceDiv);
-                }
-                else if (category == "Coffee") {
-                    coffee_menu.appendChild(spaceDiv);
-                }
-                break;
             }
         }
     }
 
     // Now process the rest, skipping already processed drinks
     for (const category in drinks) {
+
+        added_other_drinks = []
+
         drinks[category].forEach(drink => {
             if (!processedDrinks.has(drink)) {
-                drink["category"] = category;
-                Drink(drink);
                 processedDrinks.add(drink);  // Mark as processed
+                drink["category"] = category;
+                showing = Drink(drink);
+                if (showing === true) {
+                    added_other_drinks.push(drink)
+                } else {
+                    console.log()
+                }
             }
         });
 
+        if (added_other_drinks.length == 0 & added_recommended_drinks.length > 0) {
+            var recommended_elements = document.querySelectorAll(`.${category.toLowerCase()}-other-drinks-header`);
+            recommended_elements.forEach(function (element) {
+                element.remove();
+            });
+        }
+
         add_odd_element(category);
         if (get_flavor_filter().size == 0) {
-            if (idx == 0) {
-                add_all_base_spirits();
-            }
             add_all_categories(category);
+        }
+
+        lower_category = category.toLowerCase()
+
+        if (lower_category == "cocktails") {
+            availability_true = cocktails_availability_true
+            availability_false = cocktails_availability_false
+            cocktails_availability_true = document.getElementById(`${lower_category}-availability-dropdown`).checked
+            cocktails_availability_false = document.getElementById(`${lower_category}-not-availability-dropdown`).checked
+        } else if (lower_category == "mocktails") {
+            availability_true = mocktails_availability_true
+            availability_false = mocktails_availability_false
+            mocktails_availability_true = document.getElementById(`${lower_category}-availability-dropdown`).checked
+            mocktails_availability_false = document.getElementById(`${lower_category}-not-availability-dropdown`).checked
+        } else if (lower_category == "shots") {
+            availability_true = shots_availability_true
+            availability_false = shots_availability_false
+            shots_availability_true = document.getElementById(`${lower_category}-availability-dropdown`).checked
+            shots_availability_false = document.getElementById(`${lower_category}-not-availability-dropdown`).checked
+        } else if (lower_category == "coffee") {
+            availability_true = coffee_availability_true
+            availability_false = coffee_availability_false
+            coffee_availability_true = document.getElementById(`${lower_category}-availability-dropdown`).checked
+            coffee_availability_false = document.getElementById(`${lower_category}-not-availability-dropdown`).checked
+        }
+
+        if (document.getElementById(`${lower_category}-availability-dropdown`).checked != availability_true | document.getElementById(`${lower_category}-not-availability-dropdown`).checked != availability_false) {
+            add_all_ingredients(lower_category);
         }
 
         idx++;
@@ -879,7 +993,7 @@ currently_lukas_mode = false
     for (var i = 0; i < tabs.length; i++) {
         tabs[i].style.display = "none";
     }
-    document.getElementById(currently_lukas_mode ? "lukas_mode" : "drinks_menu").style.display = "block";
+    document.getElementById(currently_lukas_mode ? "lukas_mode" : "cocktails_menu").style.display = "block";
 
     /*const bcrypt = require('bcrypt');
     const saltRounds = 10;
@@ -933,8 +1047,17 @@ function toggleDropdown(dropdown_name) {
     var dropdown = document.getElementById(dropdown_name);
     if (dropdown !== null) {
         dropdown.classList.toggle('open');
+        var content = dropdown.querySelector('.dropdown-content');
+        if (content) {
+            console.log("Content found for:", dropdown_name);
+            content.style.display = content.style.display === 'block' ? 'none' : 'block'; // Force display change
+        } else {
+            console.log("No content found for:", dropdown_name);
+        }
     }
 }
+
+
 
 function closeDropdown(dropdown_name) {
     var dropdown = document.getElementById(dropdown_name);
