@@ -757,6 +757,7 @@ async function create_all() {
 
                 recommendedDiv = document.createElement("div");
                 recommendedDiv.classList.add("drink");
+                recommendedDiv.classList.add(`${category.toLowerCase()}-recommended-header-div`);
 
                 // Populate the drink container
                 if (window.location.href.search("stauti") != -1) {
@@ -805,7 +806,7 @@ async function create_all() {
                 add_odd_element(category);
 
                 if (added_recommended_drinks.length == 0) {
-                    var recommended_elements = document.querySelectorAll(`.${category.toLowerCase()}-recommended-header`);
+                    var recommended_elements = document.querySelectorAll(`.${category.toLowerCase()}-recommended-header-div`);
                     recommended_elements.forEach(function (element) {
                         element.remove();
                     });
@@ -813,6 +814,7 @@ async function create_all() {
 
                     other_drinks_div = document.createElement("div");
                     other_drinks_div.classList.add("drink");
+                    other_drinks_div.classList.add(`${category.toLowerCase()}-other-drinks-header-div`);
 
                     // Populate the drink container
                     other_drinks_div.innerHTML = `<h1 id="other_drinks_text" class="${category.toLowerCase()}-other-drinks-header">Other Drinks`
@@ -860,7 +862,7 @@ async function create_all() {
         });
 
         if (added_other_drinks.length == 0 & added_recommended_drinks.length > 0) {
-            var recommended_elements = document.querySelectorAll(`.${category.toLowerCase()}-other-drinks-header`);
+            var recommended_elements = document.querySelectorAll(`${category.toLowerCase()}-other-drinks-header-div`);
             recommended_elements.forEach(function (element) {
                 element.remove();
             });
