@@ -53,6 +53,7 @@ h1 {
   font-weight: bold;
   background-color: #2d412d;
   color: white;
+  height: 26px;
 }
 
 .category_button {
@@ -116,19 +117,19 @@ h1 {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: #202720;
   min-width: 160px;
   z-index: 1;
 }
 
 .dropdown-content label {
   display: inline-block;
+  color: #FFFFFF;
 }
 
 .dropdown.open .dropdown-content {
   display: block;
 }
-
 
 .button {
   background-color: #3d583d;
@@ -140,4 +141,42 @@ h1 {
   background-color: #659165;
   color: #202720;
   border-color:#202720;
+}
+
+.dropdown-button {
+  height: 30px;
+}
+
+
+
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
+
+/* Style the checkbox */
+input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: #659165;
+  transform: translate(-50%, -50%);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+input[type="checkbox"]:checked::before {
+  background-color: #ffffff;
 }

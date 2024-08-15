@@ -221,14 +221,26 @@ function Drink({ category = "Cocktails", name = "No Name given", ingredients = [
     formatted_chosen_ingredients = []
 
     for (let i = 0; i < chosen_ingredients.length; i++) {
-        formatted_chosen_ingredients[i] = format(chosen_ingredients[i])
+        let formattedIngredient = format(chosen_ingredients[i].replace("Missing: ", "").replace(/[\d½|\d¼]+(ml|g)? /, ''));
+        if (language["ingredients"].hasOwnProperty(formattedIngredient)) {
+            formatted_chosen_ingredients[i] = format(language["ingredients"][formattedIngredient]);
+        } else {
+            formatted_chosen_ingredients[i] = format(chosen_ingredients[i])
+        }
     }
 
     ingredient_filter = get_ingredients_filter()
 
     const filteredNames = [...ingredient_filter]
-        .filter(item => item.value === true)
-        .map(item => format(item.name.split(" ").join(" ")));
+    .filter(item => item.value === true)
+    .map(item => {
+        let formattedIngredient = format(item.name.replace("Missing: ", "").replace(/[\d½|\d¼]+(ml|g)? /, ''));
+        if (language["ingredients"].hasOwnProperty(formattedIngredient)) {
+            return format(language["ingredients"][formattedIngredient]);
+        }
+        return format(formattedIngredient);
+    });
+
 
     if (!filteredNames.every(element => formatted_chosen_ingredients.includes(element))) {
         return false
@@ -542,21 +554,33 @@ function add_odd_element(category) {
 function add_all_ingredients(category) {
 
     if (category == "cocktails") {
-        ingredients = cocktails_added_ingredients.sort()
+        ingredients = cocktails_added_ingredients
     } else if (category == "mocktails") {
-        ingredients = mocktails_added_ingredients.sort()
+        ingredients = mocktails_added_ingredients
     } else if (category == "shots") {
-        ingredients = shots_added_ingredients.sort()
+        ingredients = shots_added_ingredients
     } else if (category == "coffee") {
-        ingredients = coffee_added_ingredients.sort()
+        ingredients = coffee_added_ingredients
     }
-
-
-    delete_all_ingredients(category)
+    
+    language_ingredients = []
 
     for (let b = 0; b < ingredients.length; b++) {
         var newOption = document.createElement('label');
-        newOption.innerHTML = `<input type="checkbox" name="${ingredients[b]}" onchange="create_all()"> ${ingredients[b]}`;
+        
+        language_ingredients[b] = ingredients[b]
+        formatted_ingredient = format(ingredients[b].replace("Missing: ", "").replace(/[\d½|\d¼]+(ml|g)? /, ''))
+        if (language["ingredients"].hasOwnProperty(formatted_ingredient)) {
+            language_ingredients[b] = language["ingredients"][formatted_ingredient]
+        }
+    }
+
+    language_ingredients.sort()
+
+    delete_all_ingredients(category)
+    for (let b = 0; b < language_ingredients.length; b++) {
+        var newOption = document.createElement('label');   
+        newOption.innerHTML = `<input class="filter-checkbox" type="checkbox" name="${language_ingredients[b]}" onchange="create_all()"> ${language_ingredients[b]}`;
         // newOption.addEventListener('change', (event) => {create_all()})
         document.getElementById(`${category}-ingredients-dropdown-content`).appendChild(newOption);
         document.getElementById(`${category}-ingredients-dropdown-content`).appendChild(document.createElement('br'));
@@ -626,7 +650,7 @@ function add_all_categories(category) {
             }
             name = name.replace(temp, language_flavor)
 
-            newOption.innerHTML = `<input type="checkbox" name="${flavor_profile[f]}" onchange="create_all()"> ${name}`;
+            newOption.innerHTML = `<input class="filter-checkbox" type="checkbox" name="${flavor_profile[f]}" onchange="create_all()"> ${name}`;
             document.getElementById(my_element_id).appendChild(newOption);
             document.getElementById(my_element_id).appendChild(document.createElement('br'));
         }
@@ -1051,10 +1075,7 @@ function toggleDropdown(dropdown_name) {
         dropdown.classList.toggle('open');
         var content = dropdown.querySelector('.dropdown-content');
         if (content) {
-            console.log("Content found for:", dropdown_name);
             content.style.display = content.style.display === 'block' ? 'none' : 'block'; // Force display change
-        } else {
-            console.log("No content found for:", dropdown_name);
         }
     }
 }

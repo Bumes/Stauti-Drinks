@@ -32,7 +32,7 @@
 <body>
      <header>
           <div class="tabs">
-               <button class="tab_button" onclick="showTab('drinks_menu')"><label
+               <button class="tab_button" onclick="showTab('cocktails_menu')"><label
                          id="alcoholic_area_name"></label></button>
                <button class="tab_button" onclick="showTab('mocktails_menu')"><label
                          id="non_alcoholic_area_name"></label></button>
@@ -43,36 +43,36 @@
                <!--<button class="toggle_lukas_mode" id="toggle_lukas_mode"></button>-->
           </div>
      </header>
-     <div id="drinks_menu" class="menu">
+     <div id="cocktails_menu" class="menu">
           <div class="filter">
                <div class="search">
                     <label class="search_label"><label id="search_text"></label></label>
-                    <input class="search_filter" id="drinks-search-filter" oninput="create_all()"></input>
+                    <input class="search_filter" id="cocktails-search-filter" oninput="create_all()"></input>
 
-                    <div class="dropdown" id="drinks-base-spirit-dropdown" tabindex="1"
-                         onblur='closeDropdown("drinks-base-spirit-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("drinks-base-spirit-dropdown")'><label
-                                   id="base_spirit_text"></label></button>
-                         <div class="dropdown-content" id="drinks-base-spirit-dropdown-content">
+                    <div class="dropdown" id="cocktails-ingredients-dropdown" tabindex="0"
+                         onblur='closeDropdown("cocktails-ingredients-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("cocktails-ingredients-dropdown")'><label
+                                   id="ingredients_filter_text"></label></button>
+                         <div class="dropdown-content" id="cocktails-ingredients-dropdown-content">
                          </div>
                     </div>
 
-                    <div class="dropdown" id="drinks-category-dropdown" tabindex="0"
-                         onblur='closeDropdown("drinks-category-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("drinks-category-dropdown")'><label
+                    <div class="dropdown" id="cocktails-category-dropdown" tabindex="1"
+                         onblur='closeDropdown("cocktails-category-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("cocktails-category-dropdown")'><label
                                    id="flavor_text"></label></button>
-                         <div class="dropdown-content" id="drinks-category-dropdown-content">
+                         <div class="dropdown-content" id="cocktails-category-dropdown-content">
                          </div>
                     </div>
 
-                    <div class="dropdown" id="drinks-availability-options-dropdown" tabindex="2"
-                         onblur='closeDropdown("drinks-availability-options-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("drinks-availability-options-dropdown")'><label
+                    <div class="dropdown" id="cocktails-availability-options-dropdown" tabindex="2"
+                         onblur='closeDropdown("cocktails-availability-options-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("cocktails-availability-options-dropdown")'><label
                                    id="avaliability_text"></label></button>
-                         <div class="dropdown-content" id="drinks-availability-options-dropdown-content">
-                              <input type="checkbox" name="Available" id="drinks-availability-dropdown" checked="true"
+                         <div class="dropdown-content" id="cocktails-availability-options-dropdown-content">
+                              <input class="filter-checkbox" type="checkbox" name="Available" id="cocktails-availability-dropdown" checked="true"
                                    onclick="create_all()"><label id="available_text"></label></input>
-                              <label><input type="checkbox" name="Not Available" id="drinks-not-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Not Available" id="cocktails-not-availability-dropdown"
                                         onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
@@ -85,9 +85,17 @@
                     <label class="search_label"><label id="search_text"></label></label>
                     <input class="search_filter" id="mocktails-search-filter" oninput="create_all()"></input>
 
+                    <div class="dropdown" id="mocktails-ingredients-dropdown" tabindex="0"
+                         onblur='closeDropdown("mocktails-ingredients-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("mocktails-ingredients-dropdown")'><label
+                                   id="ingredients_filter_text"></label></button>
+                         <div class="dropdown-content" id="mocktails-ingredients-dropdown-content">
+                         </div>
+                    </div>
+
                     <div class="dropdown" id="mocktails-category-dropdown" tabindex="0"
                          onblur='closeDropdown("mocktails-category-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("mocktails-category-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("mocktails-category-dropdown")'><label
                                    id="flavor_text"></label></button>
                          <div class="dropdown-content" id="mocktails-category-dropdown-content">
                          </div>
@@ -95,13 +103,13 @@
 
                     <div class="dropdown" id="mocktails-availability-options-dropdown" tabindex="2"
                          onblur='closeDropdown("mocktails-availability-options-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("mocktails-availability-options-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("mocktails-availability-options-dropdown")'><label
                                    id="avaliability_text"></label></button>
                          <div class="dropdown-content" id="mocktails-availability-options-dropdown-content">
-                              <label><input type="checkbox" name="Available" id="mocktails-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Available" id="mocktails-availability-dropdown"
                                         checked="true" onclick="create_all()"><label
                                         id="available_text"></label></input></label>
-                              <label><input type="checkbox" name="Not Available"
+                              <label><input class="filter-checkbox" type="checkbox" name="Not Available"
                                         id="mocktails-not-availability-dropdown" onclick="create_all()"><label
                                         id="not_available_text"></label></input></label>
                          </div>
@@ -115,9 +123,17 @@
                     <label class="search_label"><label id="search_text"></label></label>
                     <input class="search_filter" id="shots-search-filter" oninput="create_all()"></input>
 
+                    <div class="dropdown" id="shots-ingredients-dropdown" tabindex="0"
+                         onblur='closeDropdown("shots-ingredients-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("shots-ingredients-dropdown")'><label
+                                   id="ingredients_filter_text"></label></button>
+                         <div class="dropdown-content" id="shots-ingredients-dropdown-content">
+                         </div>
+                    </div>
+
                     <div class="dropdown" id="shots-category-dropdown" tabindex="0"
                          onblur='closeDropdown("shots-category-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("shots-category-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("shots-category-dropdown")'><label
                                    id="flavor_text"></label></button>
                          <div class="dropdown-content" id="shots-category-dropdown-content">
                          </div>
@@ -125,13 +141,13 @@
 
                     <div class="dropdown" id="shots-availability-options-dropdown" tabindex="2"
                          onblur='closeDropdown("shots-availability-options-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("shots-availability-options-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("shots-availability-options-dropdown")'><label
                                    id="avaliability_text"></label></button>
                          <div class="dropdown-content" id="shots-availability-options-dropdown-content">
-                              <label><input type="checkbox" name="Available" id="shots-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Available" id="shots-availability-dropdown"
                                         checked="true" onclick="create_all()"><label
                                         id="available_text"></label></input></label>
-                              <label><input type="checkbox" name="Not Available" id="shots-not-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Not Available" id="shots-not-availability-dropdown"
                                         onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
@@ -144,9 +160,17 @@
                     <label class="search_label"><label id="search_text"></label></label>
                     <input class="search_filter" id="coffee-search-filter" oninput="create_all()"></input>
 
+                    <div class="dropdown" id="coffee-ingredients-dropdown" tabindex="0"
+                         onblur='closeDropdown("coffee-ingredients-dropdown")'>
+                         <button class="dropdown-button button" onclick='toggleDropdown("coffee-ingredients-dropdown")'><label
+                                   id="ingredients_filter_text"></label></button>
+                         <div class="dropdown-content" id="coffee-ingredients-dropdown-content">
+                         </div>
+                    </div>
+
                     <div class="dropdown" id="coffee-category-dropdown" tabindex="0"
                          onblur='closeDropdown("coffee-category-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("coffee-category-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("coffee-category-dropdown")'><label
                                    id="flavor_text"></label></button>
                          <div class="dropdown-content" id="coffee-category-dropdown-content">
                          </div>
@@ -154,13 +178,13 @@
 
                     <div class="dropdown" id="coffee-availability-options-dropdown" tabindex="2"
                          onblur='closeDropdown("coffee-availability-options-dropdown")'>
-                         <button class="button" onclick='toggleDropdown("coffee-availability-options-dropdown")'><label
+                         <button class="dropdown-button button" onclick='toggleDropdown("coffee-availability-options-dropdown")'><label
                                    id="avaliability_text"></label></button>
                          <div class="dropdown-content" id="coffee-availability-options-dropdown-content">
-                              <label><input type="checkbox" name="Available" id="coffee-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Available" id="coffee-availability-dropdown"
                                         checked="true" onclick="create_all()"><label
                                         id="available_text"></label></input></label>
-                              <label><input type="checkbox" name="Not Available" id="coffee-not-availability-dropdown"
+                              <label><input class="filter-checkbox" type="checkbox" name="Not Available" id="coffee-not-availability-dropdown"
                                         onclick="create_all()"><label id="not_available_text"></label></input></label>
                          </div>
                     </div>
@@ -175,7 +199,7 @@
 
      <script>
           update_language();
-          showTab('drinks_menu');
+          showTab('cocktails_menu');
      </script>
 </body>
 
